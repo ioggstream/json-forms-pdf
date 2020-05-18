@@ -1,0 +1,10 @@
+{
+  "type": "Group",
+  "label": "My Group!",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/surname"
+    }
+  ]
+}

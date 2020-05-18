@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "surname": {
+      "type": "string",
+      "default": "Ciao"
+    }
+  }
+}

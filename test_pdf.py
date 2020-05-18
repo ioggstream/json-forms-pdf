@@ -42,9 +42,6 @@ def localize_date(date_string):
 
 def csetup(name):
     c = canvas.Canvas(f"{name}.pdf")
-
-    c.setFont("Courier", 20)
-    c.drawCentredString(300, 800, "Pets")
     c.setFont("Courier", FONT_SIZE)
     return c
 
@@ -55,128 +52,162 @@ def test_layout_to_form():
     canvas.save()
 
 
-def layout_to_form(layout, form, canvas, point):
-    assert "elements" in layout
-    x, y = point
-    if layout["type"] == "HorizontalLayout":
-        y -= 10
-        point = (x, y)
-    for e in layout["elements"]:
-        x, y = element_to_form(e, form, canvas, (x, y))
+class FormRender(object):
+    def __init__(self, ui, schema, font_size=11, font_size_form=None, data=None):
+        """
+
+        :param ui: object containing ui-schema
+        :param schema:  structure containing the schema
+
+        """
+        self.ui = ui
+        self.schema = schema
+        self.resolver = jsonschema.RefResolver.from_schema(schema)
+        self.font_size = font_size
+        self.font_size_form = font_size_form or font_size
+        self.data = data or {}
+
+    @staticmethod
+    def from_file(ui_path, schema_path):
+        ui = yaml.safe_load(Path(ui_path).read_text())
+        schema = yaml.safe_load(Path(schema_path).read_text())
+        return FormRender(ui, schema)
+
+    def layout_to_form(self, layout, form, canvas, point):
+        assert "elements" in layout
+        x, y = point
+        if layout["type"] == "Group":
+            canvas.setFont("Courier", int(self.font_size * 1.5))
+            canvas.drawString(x, y, layout["label"])
+            canvas.setFont("Courier", self.font_size)
+            y -= 2 * LINE_FEED
         if layout["type"] == "HorizontalLayout":
-            x += 250
-            y = point[1]
-    if layout["type"] == "HorizontalLayout":
-        return point[0], y - LINE_FEED
-    return x, y - LINE_FEED
+            y -= 10
+            point = (x, y)
+        for e in layout["elements"]:
+            x, y = self.element_to_form(e, form, canvas, (x, y))
+            if layout["type"] == "HorizontalLayout":
+                x += 250
+                y = point[1]
+        if layout["type"] == "HorizontalLayout":
+            return point[0], y - LINE_FEED
+        return x, y - LINE_FEED
 
+    def element_to_form(self, element, form, canvas, point):
+        x, y = point
+        if "elements" in element:
+            return self.layout_to_form(element, form, canvas, (x, y))
+        assert "type" in element
+        assert "scope" in element
 
-def render_string(form, name, schema, data=None):
-    if schema["type"] in ("integer", "number"):
+        supported_types = {
+            "string",
+            "number",
+            "integer",
+            "boolean",
+        }
 
-        def _render_number(**params):
-            value = data.get(name)
-            if value:
+        schema_url, schema = self.resolver.resolve(element["scope"])
+        field_type = schema["type"]
+        property_name = basename(schema_url)
+        if field_type not in supported_types:
+            raise NotImplementedError(field)
+        render = self.render_string(form, property_name, schema, self.data)
+        y -= LINE_FEED
+        params = {
+            "name": schema_url,
+            "x": x + self.font_size * len(schema_url) // 1.4,
+            "y": y,
+            "forceBorder": True,
+        }
+        if schema.get("description"):
+            params.update({"tooltip": schema.get("description")})
+
+        canvas.drawString(x, y, schema_url)
+        render(**params)
+        return x, y
+
+    def render_string(self, form, name, schema, data=None):
+        if schema["type"] in ("integer", "number"):
+
+            def _render_number(**params):
+                value = data.get(name)
+                if value:
+                    params.update(
+                        {
+                            "value": str(value),
+                            "width": self.font_size_form * 5,
+                            "height": self.font_size_form,
+                            "borderStyle": "inset",
+                        }
+                    )
+                return form.textfield(**params)
+
+            return _render_number
+        if "enum" in schema:
+
+            def _render_enum(**params):
+                options = [(x,) for x in schema["enum"]]
+                params.update({"options": options, "value": schema["enum"][0]})
+                return form.choice(**params)
+
+            # return _render_enum
+
+            def _render_enum_2(**params):
+                x, y = params["x"], params["y"]
+                for v in schema["enum"]:
+                    form.radio(
+                        name=name,
+                        tooltip="TODO",
+                        value=v,
+                        selected=False,
+                        x=x,
+                        y=y,
+                        size=self.font_size_form,
+                        buttonStyle="check",
+                        borderStyle="solid",
+                        shape="square",
+                        forceBorder=True,
+                    )
+                    form.canv.drawString(x + self.font_size_form * 2, y, v)
+                    x += self.font_size * len(v)
+                return params["x"], y
+
+            return _render_enum_2
+
+        if schema["type"] == "boolean":
+
+            def _render_bool(**params):
                 params.update(
                     {
-                        "value": str(value),
-                        "width": FONT_SIZE * 5,
-                        "height": FONT_SIZE,
-                        "borderStyle": "inset",
+                        "buttonStyle": "check",
+                        "size": self.font_size_form,
+                        "shape": "square",
                     }
                 )
+                if data.get(name):
+                    params.update({"checked": "true"})
+                return form.checkbox(**params)
+
+            return _render_bool
+
+        def _render_string(**params):
+            value = data.get(name) or schema.get("default")
+            params.update(
+                {
+                    "width": self.font_size_form * 5,
+                    "height": self.font_size_form,
+                    "fontSize": self.font_size_form,
+                    "borderStyle": "inset",
+                }
+            )
+            if value:
+                if schema.get("format", "").startswith("date"):
+                    value = localize_date(value)
+                params.update({"value": value})
             return form.textfield(**params)
 
-        return _render_number
-    if "enum" in schema:
-
-        def _render_enum(**params):
-            options = [(x,) for x in schema["enum"]]
-            params.update({"options": options, "value": schema["enum"][0]})
-            return form.choice(**params)
-
-        # return _render_enum
-
-        def _render_enum_2(**params):
-            x, y = params["x"], params["y"]
-            for v in schema["enum"]:
-                form.radio(
-                    name=name,
-                    tooltip="TODO",
-                    value=v,
-                    selected=False,
-                    x=x,
-                    y=y,
-                    size=FONT_SIZE,
-                    buttonStyle="check",
-                    borderStyle="solid",
-                    shape="square",
-                    forceBorder=True,
-                )
-                form.canv.drawString(x + FONT_SIZE * 2, y, v)
-                x += FONT_SIZE * len(v)
-            return params["x"], y
-
-        return _render_enum_2
-
-    if schema["type"] == "boolean":
-
-        def _render_bool(**params):
-            params.update(
-                {"buttonStyle": "check", "size": FONT_SIZE, "shape": "square"}
-            )
-            if data.get(name):
-                params.update({"checked": "true"})
-            return form.checkbox(**params)
-
-        return _render_bool
-
-    def _render_string(**params):
-        value = data.get(name)
-        params.update(
-            {"width": FONT_SIZE * 5, "height": FONT_SIZE, "borderStyle": "inset"}
-        )
-        if value:
-            if schema.get("format", "").startswith("date"):
-                value = localize_date(value)
-            params.update({"value": value})
-        return form.textfield(**params)
-
-    return _render_string
-
-
-def element_to_form(element, form, canvas, point):
-    x, y = point
-    if "elements" in element:
-        return layout_to_form(element, form, canvas, (x, y))
-    assert "type" in element
-    assert "scope" in element
-    field_map = {
-        "string": form.textfield,
-        "number": form.textfield,
-        "integer": form.textfield,
-        "boolean": form.checkbox,
-    }
-
-    schema_url = element["scope"]
-    schema_url, schema = form_fields.resolve(schema_url)
-    field_type = schema["type"]
-    property_name = basename(schema_url)
-    if field_type not in field_map:
-        raise NotImplementedError(field)
-    render = render_string(form, property_name, schema, DATA)
-    y -= LINE_FEED
-    params = {
-        "name": schema_url,
-        "tooltip": "TODO",
-        "x": x + FONT_SIZE * len(schema_url) // 1.4,
-        "y": y,
-        "forceBorder": True,
-    }
-
-    canvas.drawString(x, y, schema_url)
-    render(**params)
-    return x, y
+        return _render_string
 
 
 def test_get_fields():
@@ -185,6 +216,21 @@ def test_get_fields():
     f = PyPDF2.PdfFileReader("form.pdf")
     ff = f.getFields()
     assert "#/properties/name" in ff
+
+
+@pytest.fixture(scope="module", params=["group", "simple"])
+def harn_form_render(request):
+    label = request.param
+    fr = FormRender.from_file(f"data/ui-{label}.json", f"data/schema-{label}.json")
+    return fr
+
+
+def test_group(harn_form_render):
+    point = (0, 800)
+    canvas = csetup("group")
+    layout = harn_form_render.ui
+    harn_form_render.layout_to_form(layout, canvas.acroForm, canvas, point)
+    canvas.save()
 
 
 def test_text():
