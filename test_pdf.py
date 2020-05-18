@@ -1,5 +1,3 @@
-
-
 # simple_checkboxes.py
 
 from reportlab.pdfgen import canvas
@@ -79,10 +77,14 @@ def render_string(form, name, schema, data=None):
         def _render_number(**params):
             value = data.get(name)
             if value:
-                params.update({"value": str(value),
-                               "width": FONT_SIZE * 5, "height": FONT_SIZE, "borderStyle": "inset"
-
-                               })
+                params.update(
+                    {
+                        "value": str(value),
+                        "width": FONT_SIZE * 5,
+                        "height": FONT_SIZE,
+                        "borderStyle": "inset",
+                    }
+                )
             return form.textfield(**params)
 
         return _render_number
@@ -120,10 +122,9 @@ def render_string(form, name, schema, data=None):
     if schema["type"] == "boolean":
 
         def _render_bool(**params):
-            params.update({"buttonStyle": "check",
-                           "size":FONT_SIZE,
-                           "shape": "square"
-                           })
+            params.update(
+                {"buttonStyle": "check", "size": FONT_SIZE, "shape": "square"}
+            )
             if data.get(name):
                 params.update({"checked": "true"})
             return form.checkbox(**params)
