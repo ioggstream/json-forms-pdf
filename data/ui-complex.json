@@ -8,8 +8,27 @@
     },
     {
       "type": "Control",
-      "label": "Given name",
       "scope": "#/properties/given_name"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/surname"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/tax_code"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/birth_date"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/birth_place"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/birth_place"
     },
     {
       "type": "HorizontalLayout",
@@ -32,14 +51,13 @@
         "multi": true
       }
     },
-
-    {
-      "type": "HorizontalLayout",
-      "elements": [
         {
           "type": "Control",
           "scope": "#/properties/recurrence"
         },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
         {
           "type": "Control",
           "scope": "#/properties/recurrence_interval",

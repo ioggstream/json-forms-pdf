@@ -1,0 +1,63 @@
+{
+  "type": "object",
+  "properties": {
+    "person": {
+      "title": "Person",
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "age": {
+          "description": "Age in years",
+          "type": "integer",
+          "minimum": 0
+        },
+        "shippingAddress": {
+          "type": "string",
+          "label": "Address Type",
+          "enum": [
+            "Home Address 1",
+            "Home Address 2",
+            "Workplace"
+          ]
+        }
+      },
+      "required": [
+        "firstName",
+        "lastName"
+      ]
+    },
+    "address": {
+      "title": "Order",
+      "type": "object",
+      "properties": {
+        "addressId": {
+          "type": "string",
+          "label": "Address Type",
+          "enum": [
+            "Home Address 1",
+            "Home Address 2",
+            "Workplace"
+          ]
+        },
+        "street": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "zipCode": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "__filemeta": {
+    "name": "schema",
+    "filename": "src/pages/docs/components/multiple-forms/FormsExamples.js"
+  }
+}

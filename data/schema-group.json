@@ -4,6 +4,10 @@
     "surname": {
       "type": "string",
       "default": "Ciao"
+    },
+    "given_name": {
+      "type": "string",
+      "default": "Ciao"
     }
   }
 }

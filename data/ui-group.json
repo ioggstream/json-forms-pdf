@@ -5,6 +5,26 @@
     {
       "type": "Control",
       "scope": "#/properties/surname"
+    },
+    {
+      "type": "Group",
+      "label": "G2",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/given_name"
+        },
+        {
+          "type": "Group",
+          "label": "G3",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/given_name"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

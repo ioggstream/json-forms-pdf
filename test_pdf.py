@@ -1,8 +1,9 @@
 # simple_checkboxes.py
+import logging
 
 from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfform
-from reportlab.lib.colors import magenta, pink, blue, green
+
+# from reportlab.pdfbase import pdfform
 import yaml
 from pathlib import Path
 import jsonschema
@@ -15,8 +16,10 @@ import pytest
 
 from os.path import basename
 
-FONT_SIZE = 10
-LINE_FEED = 4 * FONT_SIZE
+log = logging.getLogger()
+logging.basicConfig(level=logging.DEBUG)
+
+
 DATA = {
     "name": "foo",
     "description": "Confirm if you have passed the subject\nHereby ...",
@@ -40,20 +43,14 @@ def localize_date(date_string):
         return date_string
 
 
-def csetup(name):
+def csetup(name, font_size=12):
     c = canvas.Canvas(f"{name}.pdf")
-    c.setFont("Courier", FONT_SIZE)
+    c.setFont("Courier", font_size)
     return c
 
 
-def test_layout_to_form():
-    canvas = csetup("antani")
-    layout_to_form(uischema, canvas.acroForm, canvas, (0, 800))
-    canvas.save()
-
-
 class FormRender(object):
-    def __init__(self, ui, schema, font_size=11, font_size_form=None, data=None):
+    def __init__(self, ui, schema, font_size=11, font_size_form=None, data=DATA):
         """
 
         :param ui: object containing ui-schema
@@ -66,6 +63,7 @@ class FormRender(object):
         self.font_size = font_size
         self.font_size_form = font_size_form or font_size
         self.data = data or {}
+        self.line_feed = 5 * self.font_size
 
     @staticmethod
     def from_file(ui_path, schema_path):
@@ -80,7 +78,7 @@ class FormRender(object):
             canvas.setFont("Courier", int(self.font_size * 1.5))
             canvas.drawString(x, y, layout["label"])
             canvas.setFont("Courier", self.font_size)
-            y -= 2 * LINE_FEED
+            y -= 2 * self.line_feed
         if layout["type"] == "HorizontalLayout":
             y -= 10
             point = (x, y)
@@ -90,8 +88,8 @@ class FormRender(object):
                 x += 250
                 y = point[1]
         if layout["type"] == "HorizontalLayout":
-            return point[0], y - LINE_FEED
-        return x, y - LINE_FEED
+            return point[0], y - self.line_feed
+        return x, y - self.line_feed
 
     def element_to_form(self, element, form, canvas, point):
         x, y = point
@@ -109,38 +107,43 @@ class FormRender(object):
 
         schema_url, schema = self.resolver.resolve(element["scope"])
         field_type = schema["type"]
-        property_name = basename(schema_url)
         if field_type not in supported_types:
-            raise NotImplementedError(field)
-        render = self.render_string(form, property_name, schema, self.data)
-        y -= LINE_FEED
+            raise NotImplementedError(field_type)
+
+        property_name = basename(schema_url)
+        field_label = element.get("label") or labelize(schema_url)
+
+        render = self.render_function(form, property_name, schema, self.data)
+        y -= self.line_feed
         params = {
             "name": schema_url,
-            "x": x + self.font_size * len(schema_url) // 1.4,
+            "x": x + self.font_size * len(field_labeltest_pdf.py) // 1.4,
             "y": y,
             "forceBorder": True,
         }
         if schema.get("description"):
             params.update({"tooltip": schema.get("description")})
 
-        canvas.drawString(x, y, schema_url)
+        canvas.drawString(x, y, field_label)
         render(**params)
         return x, y
 
-    def render_string(self, form, name, schema, data=None):
+    def render_function(self, form, name, schema, data=None):
         if schema["type"] in ("integer", "number"):
 
             def _render_number(**params):
+                params.update(
+                    {
+                        "width": self.font_size_form * 5,
+                        "height": self.font_size_form * 1.5,
+                    }
+                )
                 value = data.get(name)
                 if value:
                     params.update(
-                        {
-                            "value": str(value),
-                            "width": self.font_size_form * 5,
-                            "height": self.font_size_form,
-                            "borderStyle": "inset",
-                        }
+                        {"value": str(value), "borderStyle": "inset",}
                     )
+
                 return form.textfield(**params)
 
             return _render_number
@@ -195,12 +198,16 @@ class FormRender(object):
             value = data.get(name) or schema.get("default")
             params.update(
                 {
-                    "width": self.font_size_form * 5,
-                    "height": self.font_size_form,
+                    "width": self.font_size_form * 10,
+                    "height": self.font_size_form * 1.5,
                     "fontSize": self.font_size_form,
                     "borderStyle": "inset",
                 }
             )
+            if schema.get("format", "").startswith("date"):
+                params.update(
+                    {"width": self.font_size_form * 8,}
+                )
             if value:
                 if schema.get("format", "").startswith("date"):
                     value = localize_date(value)
@@ -210,34 +217,40 @@ class FormRender(object):
         return _render_string
 
 
+def labelize(s):
+    return basename(s).replace("_", " ").capitalize()
+
+
 def test_get_fields():
     import PyPDF2
 
-    f = PyPDF2.PdfFileReader("form.pdf")
+    f = PyPDF2.PdfFileReader("simple.pdf")
     ff = f.getFields()
-    assert "#/properties/name" in ff
+    assert "#/properties/given_name" in ff
 
 
 @pytest.fixture(scope="module", params=["group", "simple"])
 def harn_form_render(request):
     label = request.param
+    log.warning("Run test with, %r", label)
     fr = FormRender.from_file(f"data/ui-{label}.json", f"data/schema-{label}.json")
-    return fr
+    canvas = csetup(label)
+    return fr, canvas
 
 
 def test_group(harn_form_render):
     point = (0, 800)
-    canvas = csetup("group")
-    layout = harn_form_render.ui
-    harn_form_render.layout_to_form(layout, canvas.acroForm, canvas, point)
+    fr, canvas = harn_form_render
+    layout = fr.ui
+    fr.layout_to_form(layout, canvas.acroForm, canvas, point)
     canvas.save()
 
 
 def test_text():
     c = canvas.Canvas("form.pdf")
-    c.setFont("Courier", FONT_SIZE)
+    c.setFont("Courier", 12)
     c.drawCentredString(300, 700, "Pets")
-    c.setFont("Courier", FONT_SIZE)
+    c.setFont("Courier", 11)
     form = c.acroForm
 
     x, y = 110, 645
@@ -254,11 +267,7 @@ def test_text():
             shape="square",
             forceBorder=True,
         )
-        c.drawString(x + FONT_SIZE * 2, y, v)
-        x += FONT_SIZE * len(v)
-
-    y = 100
-    # for e in uischema["elements"]:
-    #     y = element_to_form(e, form, c, 100, y)
+        c.drawString(x + 11 * 2, y, v)
+        x += 11 * len(v)
 
     c.save()
