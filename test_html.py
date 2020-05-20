@@ -1,4 +1,5 @@
 # simple_checkboxes.py
+import json
 import logging
 import shlex
 import xml.etree.ElementTree as ET
@@ -7,6 +8,7 @@ from os.path import basename
 from pathlib import Path
 from subprocess import run
 
+import jsonref
 import jsonschema
 import pytest
 import yaml
@@ -46,8 +48,10 @@ class HtmlRender(object):
 
         """
         self.ui = ui
-        self.schema = schema
-        self.resolver = jsonschema.RefResolver.from_schema(schema)
+        # Use jsonref.loads to resolve $ref in schema. If we want to use external
+        # references we need external resolver.
+        self.schema = jsonref.loads(json.dumps(schema))
+        self.resolver = jsonschema.RefResolver.from_schema(self.schema)
         self.font_size = font_size
         self.font_size_form = font_size_form or font_size
         self.data = data or {}
@@ -61,7 +65,7 @@ class HtmlRender(object):
         )
 
     def dump(self):
-        return ET.tostring(self.root)
+        return b"<!DOCTYPE html>" + ET.tostring(self.root)
 
     @staticmethod
     def from_file(ui_path, schema_path):
@@ -150,7 +154,12 @@ class HtmlRender(object):
                 ET.SubElement(
                     d,
                     "input",
-                    attrib={"type": "radio", "name": schema_url, "value": v,},
+                    attrib={
+                        "type": "radio",
+                        "name": schema_url,
+                        "id": schema_url,
+                        "value": v,
+                    },
                 )
                 label = ET.SubElement(d, "label", attrib={"for": v})
                 label.text = v
@@ -181,7 +190,7 @@ def test_get_fields():
     assert "#/properties/given_name" in ff
 
 
-@pytest.fixture(scope="module", params=["group", "simple", "person"])
+@pytest.fixture(scope="module", params=["group", "simple", "person", "notifica"])
 def harn_form_render(request):
     label = request.param
     log.warning("Run test with, %r", label)
