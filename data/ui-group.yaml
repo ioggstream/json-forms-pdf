@@ -1,0 +1,24 @@
+label: G1
+type: VerticalLayout
+elements:
+- scope: '#/properties/surname'
+  type: Control
+- label: G1.1
+  type: Group
+  elements:
+  - scope: '#/properties/given_name'
+    type: Control
+  - scope: '#/properties/given_name'
+    type: Control
+- label: G1.2
+  type: Group
+  elements:
+  - scope: '#/properties/given_name'
+    type: Control
+  - label: G1.2.1
+    type: HorizontalLayout
+    elements:
+    - scope: '#/properties/given_name'
+      type: Control
+    - scope: '#/properties/given_name'
+      type: Control

@@ -32,7 +32,6 @@
         "multi": true
       }
     },
-
     {
       "type": "HorizontalLayout",
       "elements": [

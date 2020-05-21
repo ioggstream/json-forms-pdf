@@ -7,7 +7,7 @@ from os import getcwd
 from os.path import basename
 from pathlib import Path
 from subprocess import run
-
+from markdown import markdown
 import jsonref
 import jsonschema
 import pytest
@@ -65,7 +65,7 @@ class HtmlRender(object):
         )
 
     def dump(self):
-        return b"<!DOCTYPE html>" + ET.tostring(self.root)
+        return b"<!DOCTYPE html>" + ET.tostring(self.root, method="html")
 
     @staticmethod
     def from_file(ui_path, schema_path):
@@ -73,45 +73,56 @@ class HtmlRender(object):
         schema = yaml.safe_load(Path(schema_path).read_text())
         return HtmlRender(ui, schema)
 
-    def layout_to_form(self, layout, parent=None):
+    def layout_to_form(self, layout, parent=None, attrib=None):
         parent = parent or self.form
         log.warning("layout: %r, parent: %r", layout["type"], parent)
-        assert "elements" in layout
-        # import pdb; pdb.set_trace()
+
+        if layout["type"] == "Control":
+            child = self.element_to_form(layout, attrib)
+            parent.append(child)
+            return
+
+        elements_attrib = {}
         if layout["type"] == "Group":
-            child = ET.SubElement(parent, "div", attrib={"class": layout["type"]})
-            h1 = ET.SubElement(child, "h1")
-            h1.text = layout["label"]
-            for e in layout["elements"]:
-                form_data = self.element_to_form(e)
-                d = ET.SubElement(
-                    child, "div", attrib={"style": "background-color: blue"}
-                )
-                if "elements" not in e:
-                    d.append(form_data)
-        elif layout["type"] == "HorizontalLayout":
-            child = ET.SubElement(parent, "div", attrib={"class": layout["type"]})
-            for e in layout["elements"]:
-                form_data = self.element_to_form(e)
-                d = ET.SubElement(child, "div", attrib={"class": "#side-10"})
-                if "elements" not in e:
-                    d.append(form_data)
+            pass
         elif layout["type"] == "VerticalLayout":
-            child = ET.SubElement(parent, "div", attrib={"class": layout["type"]})
-            for e in layout["elements"]:
-                d = ET.SubElement(child, "div")
-                form_data = self.element_to_form(e)
-                if "elements" not in e:
-                    d.append(form_data)
+            pass
+        elif layout["type"] == "HorizontalLayout":
+            elements_attrib = {"class": "size-20"}
         else:
             raise NotImplementedError(layout["type"])
-        d = None
-        return child
 
-    def element_to_form(self, element):
-        d = ET.Element("div")
-        if "elements" in element:
-            return self.layout_to_form(element, d)
+        child = ET.SubElement(
+            parent,
+            "div",
+            attrib={"class": layout["type"], "label": layout.get("label", "")},
+        )
+        if "label" in layout:
+            h1 = ET.SubElement(child, "h1")
+            h1.text = layout["label"]
+        else:
+            ET.SubElement(child, "br")
+        if "description" in layout:
+            child.append(
+                ET.fromstring(f"<div>" + markdown(layout["description"]) + "</div>")
+            )
+
+        for e in layout["elements"]:
+            # import pdb; pdb.set_trace()
+            log.warning(
+                "adding %r.%r to %r.%r",
+                e.get("type"),
+                e.get("label"),
+                child,
+                child.attrib.get("label"),
+            )
+            self.layout_to_form(e, child, attrib=elements_attrib)
+
+    def element_to_form(self, element, attrib=None):
+        attrib = attrib or {}
+        if "class" in attrib:
+            attrib["class"] += " form-field"
+        d = ET.Element("span", attrib=attrib)
         assert "type" in element
         assert "scope" in element
 
@@ -135,11 +146,13 @@ class HtmlRender(object):
             "name": schema_url,
             "forceBorder": True,
         }
-        if schema.get("description"):
-            params.update({"tooltip": schema.get("description")})
 
         text = ET.SubElement(d, "text")
         text.text = field_label
+
+        if schema.get("description"):
+            params.update({"tooltip": schema.get("description")})
+            text.text += f' ({schema.get("description")})'
 
         if field_type == "boolean":
             ET.SubElement(
@@ -190,10 +203,21 @@ def test_get_fields():
     assert "#/properties/given_name" in ff
 
 
-@pytest.fixture(scope="module", params=["group", "simple", "person", "notifica"])
+@pytest.fixture(
+    scope="module",
+    params=[
+        # "group", "simple", "person",
+        "notifica"
+    ],
+)
 def harn_form_render(request):
     label = request.param
     log.warning("Run test with, %r", label)
+    yaml_file = Path(f"data/ui-{label}.yaml")
+    if yaml_file.is_file():
+        yaml_data = yaml.safe_load(yaml_file.read_text())
+        json_data = json.dumps(yaml_data)
+        Path(f"data/ui-{label}.json").write_text(json_data)
     fr = HtmlRender.from_file(f"data/ui-{label}.json", f"data/schema-{label}.json")
     return fr, label
 
@@ -212,4 +236,4 @@ def test_group(harn_form_render):
 
     log.warning(convert_command)
     run(shlex.split(convert_command))
-    # run(shlex.split(f"xdg-open {dpath}.pdf"))
+    run(shlex.split(f"xdg-open {dpath}.pdf"))

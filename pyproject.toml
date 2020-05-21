@@ -12,6 +12,7 @@ jsonschema = "^3.2.0"
 pypdf = "^1.13"
 pypdf2 = "^1.26.0"
 jsonref = "^0.2"
+markdown = "^3.2.2"
 
 [tool.poetry.dev-dependencies]
 ipython = "^7.14.0"
