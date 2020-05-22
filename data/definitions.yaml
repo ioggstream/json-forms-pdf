@@ -244,7 +244,7 @@ schemas:
         title: Località
         type: string
       country:
-        title: statogit 
+        title: stato
         x-url: https://w3id.org/italia/onto/CLV/Country
         type: string
       province:

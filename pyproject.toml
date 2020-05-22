@@ -13,6 +13,7 @@ pypdf2 = "^1.26.0"
 jsonref = "^0.2"
 markdown = "^3.2.2"
 openapi-resolver = "^0.0.6"
+xfdfgen = "^0.4"
 
 [tool.poetry.dev-dependencies]
 ipython = "^7.14.0"

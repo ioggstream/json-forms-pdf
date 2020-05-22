@@ -91,6 +91,11 @@ elements:
       - type: Control
         scope: "#/properties/inizio_detenzione/properties/indirizzo/properties/zip_code"
 
+    - type: Group
+      label: Dati immobile
+      elements:
+      - type: Control
+        scope: "#/properties/inizio_detenzione/properties/indirizzo/properties/street"
 
 - type: Group
   label: Address

@@ -1,55 +1,204 @@
 {
-  "type": "VerticalLayout",
+  "__filemeta": {
+    "filename": "src/pages/docs/components/multiple-forms/FormsExamples.js",
+    "name": "uischema"
+  },
   "elements": [
     {
-      "type": "Control",
-      "label": false,
-      "scope": "#/properties/done"
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/name"
-    },
-    {
-      "type": "HorizontalLayout",
+      "description": "![Alt text](data/header-notifica.png)",
       "elements": [
         {
-          "type": "Control",
-          "scope": "#/properties/due_date"
-        },
-        {
-          "type": "Control",
-          "scope": "#/properties/rating"
+          "label": "Denuncia di",
+          "scope": "#/properties/atto",
+          "type": "Control"
         }
-      ]
+      ],
+      "type": "HorizontalLayout"
     },
     {
-      "type": "Control",
-      "scope": "#/properties/description",
-      "options": {
-        "multi": true
-      }
-    },
-        {
-          "type": "Control",
-          "scope": "#/properties/recurrence"
-        },
-    {
-      "type": "HorizontalLayout",
       "elements": [
         {
-          "type": "Control",
-          "scope": "#/properties/recurrence_interval",
-          "rule": {
-            "effect": "HIDE",
-            "condition": {
-              "type": "LEAF",
-              "scope": "#/properties/recurrence",
-              "expectedValue": "Never"
+          "elements": [
+            {
+              "scope": "#/properties/person/properties/given_name",
+              "type": "Control"
+            },
+            {
+              "scope": "#/properties/person/properties/family_name",
+              "type": "Control"
+            },
+            {
+              "scope": "#/properties/person/properties/tax_code",
+              "type": "Control"
             }
-          }
+          ],
+          "type": "HorizontalLayout"
+        },
+        {
+          "elements": [
+            {
+              "label": "Nato a",
+              "scope": "#/properties/person/properties/date_of_birth",
+              "type": "Control"
+            },
+            {
+              "scope": "#/properties/person/properties/birth_place/properties/city",
+              "type": "Control"
+            },
+            {
+              "scope": "#/properties/person/properties/birth_place/properties/province",
+              "type": "Control"
+            }
+          ],
+          "type": "HorizontalLayout"
+        },
+        {
+          "elements": [
+            {
+              "scope": "#/properties/person/properties/residence/properties/city",
+              "type": "Control"
+            },
+            {
+              "scope": "#/properties/person/properties/residence/properties/province",
+              "type": "Control"
+            },
+            {
+              "scope": "#/properties/person/properties/residence/properties/country",
+              "type": "Control"
+            }
+          ],
+          "label": "Residente in",
+          "type": "HorizontalLayout"
         }
-      ]
+      ],
+      "label": "Il sottoscritto",
+      "type": "Group"
+    },
+    {
+      "description": "consapevole delle sanzioni blablabla **DICHARA**",
+      "elements": [
+        {
+          "elements": [
+            {
+              "label": "Inizio detenzione",
+              "scope": "#/properties/inizio_detenzione/properties/is_inizio_detenzione",
+              "type": "Control"
+            },
+            {
+              "label": "Dal",
+              "scope": "#/properties/inizio_detenzione/properties/data_inizio_detenzione",
+              "type": "Control"
+            },
+            {
+              "elements": [
+                {
+                  "scope": "#/properties/inizio_detenzione/properties/di_proprieta",
+                  "type": "Control"
+                },
+                {
+                  "scope": "#/properties/inizio_detenzione/properties/affitto_o_comodato",
+                  "type": "Control"
+                },
+                {
+                  "elements": [
+                    {
+                      "scope": "#/properties/inizio_detenzione/properties/proprietario/properties/given_name",
+                      "type": "Control"
+                    },
+                    {
+                      "scope": "#/properties/inizio_detenzione/properties/proprietario/properties/family_name",
+                      "type": "Control"
+                    },
+                    {
+                      "scope": "#/properties/inizio_detenzione/properties/proprietario/properties/residence/properties/street",
+                      "type": "Control"
+                    },
+                    {
+                      "scope": "#/properties/inizio_detenzione/properties/proprietario/properties/residence/properties/city",
+                      "type": "Control"
+                    },
+                    {
+                      "scope": "#/properties/inizio_detenzione/properties/proprietario/properties/residence/properties/province",
+                      "type": "Control"
+                    }
+                  ],
+                  "label": "eventuali dati proprietario",
+                  "type": "HorizontalLayout"
+                }
+              ],
+              "label": "Titolo di Occupazione",
+              "type": "Group"
+            },
+            {
+              "elements": [
+                {
+                  "scope": "#/properties/inizio_detenzione/properties/indirizzo/properties/street",
+                  "type": "Control"
+                },
+                {
+                  "scope": "#/properties/inizio_detenzione/properties/indirizzo/properties/int",
+                  "type": "Control"
+                },
+                {
+                  "scope": "#/properties/inizio_detenzione/properties/indirizzo/properties/floor",
+                  "type": "Control"
+                },
+                {
+                  "scope": "#/properties/inizio_detenzione/properties/indirizzo/properties/place",
+                  "type": "Control"
+                },
+                {
+                  "scope": "#/properties/inizio_detenzione/properties/indirizzo/properties/city",
+                  "type": "Control"
+                },
+                {
+                  "scope": "#/properties/inizio_detenzione/properties/indirizzo/properties/province",
+                  "type": "Control"
+                },
+                {
+                  "scope": "#/properties/inizio_detenzione/properties/indirizzo/properties/zip_code",
+                  "type": "Control"
+                }
+              ],
+              "label": "Indirizzo immobile",
+              "type": "HorizontalLayout"
+            }
+          ],
+          "type": "VerticalLayout"
+        }
+      ],
+      "label": "Dichiarazione",
+      "type": "Group"
+    },
+    {
+      "elements": [
+        {
+          "elements": [
+            {
+              "scope": "#/properties/address/properties/location/properties/street",
+              "type": "Control"
+            }
+          ],
+          "type": "HorizontalLayout"
+        },
+        {
+          "elements": [
+            {
+              "scope": "#/properties/address/properties/location/properties/city",
+              "type": "Control"
+            },
+            {
+              "scope": "#/properties/address/properties/location/properties/zip_code",
+              "type": "Control"
+            }
+          ],
+          "type": "HorizontalLayout"
+        }
+      ],
+      "label": "Address",
+      "type": "Group"
     }
-  ]
+  ],
+  "label": "VL",
+  "type": "VerticalLayout"
 }

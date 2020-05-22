@@ -1,31 +1,402 @@
 {
-  "type": "object",
+  "__filemeta": {
+    "filename": "src/pages/docs/components/multiple-forms/FormsExamples.js",
+    "name": "schema"
+  },
   "properties": {
-    "name": {
-      "type": "string",
-      "minLength": 1
+    "address": {
+      "properties": {
+        "addressId": {
+          "enum": [
+            "Home Address 1",
+            "Home Address 2",
+            "Workplace"
+          ],
+          "label": "Address Type",
+          "type": "string"
+        },
+        "location": {
+          "properties": {
+            "city": {
+              "title": "citt\u00e0",
+              "x-url": "https://w3id.org/italia/onto/CLV/City",
+              "type": "string"
+            },
+            "place": {
+              "title": "Localit\u00e0",
+              "type": "string"
+            },
+            "country": {
+              "title": "statogit",
+              "x-url": "https://w3id.org/italia/onto/CLV/Country",
+              "type": "string"
+            },
+            "province": {
+              "title": "provincia",
+              "x-url": "https://w3id.org/italia/onto/CLV/Province",
+              "type": "string"
+            },
+            "region": {
+              "type": "string"
+            },
+            "zip_code": {
+              "title": "cap",
+              "type": "string"
+            },
+            "street": {
+              "title": "via",
+              "type": "string"
+            },
+            "int": {
+              "title": "interno",
+              "type": "string"
+            },
+            "floor": {
+              "title": "piano",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "title": "Order",
+      "type": "object"
     },
-    "description": {
+    "atto": {
+      "enum": [
+        "cessazione",
+        "variazione",
+        "inizio",
+        "riduzione"
+      ],
       "type": "string"
     },
-    "done": {
-      "type": "boolean"
+    "inizio_detenzione": {
+      "properties": {
+        "affitto_o_comodato": {
+          "type": "boolean"
+        },
+        "data_inizio_detenzione": {
+          "format": "date",
+          "type": "string"
+        },
+        "di_proprieta": {
+          "type": "boolean"
+        },
+        "indirizzo": {
+          "properties": {
+            "city": {
+              "title": "citt\u00e0",
+              "x-url": "https://w3id.org/italia/onto/CLV/City",
+              "type": "string"
+            },
+            "place": {
+              "title": "Localit\u00e0",
+              "type": "string"
+            },
+            "country": {
+              "title": "statogit",
+              "x-url": "https://w3id.org/italia/onto/CLV/Country",
+              "type": "string"
+            },
+            "province": {
+              "title": "provincia",
+              "x-url": "https://w3id.org/italia/onto/CLV/Province",
+              "type": "string"
+            },
+            "region": {
+              "type": "string"
+            },
+            "zip_code": {
+              "title": "cap",
+              "type": "string"
+            },
+            "street": {
+              "title": "via",
+              "type": "string"
+            },
+            "int": {
+              "title": "interno",
+              "type": "string"
+            },
+            "floor": {
+              "title": "piano",
+              "type": "string"
+            }
+          }
+        },
+        "is_inizio_detenzione": {
+          "type": "boolean"
+        },
+        "proprietario": {
+          "externalDocs": {
+            "url": "https://w3id.org/italia/onto/CPV"
+          },
+          "properties": {
+            "birth_place": {
+              "properties": {
+                "city": {
+                  "title": "citt\u00e0",
+                  "x-url": "https://w3id.org/italia/onto/CLV/City",
+                  "type": "string"
+                },
+                "place": {
+                  "title": "Localit\u00e0",
+                  "type": "string"
+                },
+                "country": {
+                  "title": "statogit",
+                  "x-url": "https://w3id.org/italia/onto/CLV/Country",
+                  "type": "string"
+                },
+                "province": {
+                  "title": "provincia",
+                  "x-url": "https://w3id.org/italia/onto/CLV/Province",
+                  "type": "string"
+                },
+                "region": {
+                  "type": "string"
+                },
+                "zip_code": {
+                  "title": "cap",
+                  "type": "string"
+                },
+                "street": {
+                  "title": "via",
+                  "type": "string"
+                },
+                "int": {
+                  "title": "interno",
+                  "type": "string"
+                },
+                "floor": {
+                  "title": "piano",
+                  "type": "string"
+                }
+              }
+            },
+            "date_of_birth": {
+              "title": "nato il",
+              "format": "date",
+              "type": "string"
+            },
+            "family_name": {
+              "title": "cognome",
+              "type": "string"
+            },
+            "given_name": {
+              "title": "nome",
+              "type": "string"
+            },
+            "residence": {
+              "properties": {
+                "city": {
+                  "title": "citt\u00e0",
+                  "x-url": "https://w3id.org/italia/onto/CLV/City",
+                  "type": "string"
+                },
+                "place": {
+                  "title": "Localit\u00e0",
+                  "type": "string"
+                },
+                "country": {
+                  "title": "statogit",
+                  "x-url": "https://w3id.org/italia/onto/CLV/Country",
+                  "type": "string"
+                },
+                "province": {
+                  "title": "provincia",
+                  "x-url": "https://w3id.org/italia/onto/CLV/Province",
+                  "type": "string"
+                },
+                "region": {
+                  "type": "string"
+                },
+                "zip_code": {
+                  "title": "cap",
+                  "type": "string"
+                },
+                "street": {
+                  "title": "via",
+                  "type": "string"
+                },
+                "int": {
+                  "title": "interno",
+                  "type": "string"
+                },
+                "floor": {
+                  "title": "piano",
+                  "type": "string"
+                }
+              }
+            },
+            "tax_code": {
+              "description": "Il codice fiscale.",
+              "example": "RSSMRA75L01H501A",
+              "externalDocs": {
+                "url": "https://w3id.org/italia/onto/CPV/taxCode"
+              },
+              "pattern": "/^(?:(?:[B-DF-HJ-NP-TV-Z]|[AEIOU])[AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}[\\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[1256LMRS][\\dLMNP-V])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM])(?:[A-MZ][1-9MNP-V][\\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$/i",
+              "type": "string"
+            }
+          }
+        },
+        "superfici_imponibili": {
+          "items": {
+            "properties": {
+              "categoria": {
+                "type": "string"
+              },
+              "foglio": {
+                "type": "string"
+              },
+              "particella": {
+                "type": "string"
+              },
+              "sub": {
+                "type": "string"
+              },
+              "superficie_calpestabile": {
+                "type": "integer",
+                "description": "Superficie calpestabile in mq"
+              },
+              "superficie_imponibile": {
+                "type": "string",
+                "description": "Superficie calpestabile in mq"
+              }
+            }
+          },
+          "maxItems": 5,
+          "minItems": 5,
+          "type": "array"
+        }
+      }
     },
-    "due_date": {
-      "type": "string",
-      "format": "date"
+    "person": {
+      "externalDocs": {
+        "url": "https://w3id.org/italia/onto/CPV"
+      },
+      "properties": {
+        "birth_place": {
+          "properties": {
+            "city": {
+              "title": "citt\u00e0",
+              "x-url": "https://w3id.org/italia/onto/CLV/City",
+              "type": "string"
+            },
+            "place": {
+              "title": "Localit\u00e0",
+              "type": "string"
+            },
+            "country": {
+              "title": "statogit",
+              "x-url": "https://w3id.org/italia/onto/CLV/Country",
+              "type": "string"
+            },
+            "province": {
+              "title": "provincia",
+              "x-url": "https://w3id.org/italia/onto/CLV/Province",
+              "type": "string"
+            },
+            "region": {
+              "type": "string"
+            },
+            "zip_code": {
+              "title": "cap",
+              "type": "string"
+            },
+            "street": {
+              "title": "via",
+              "type": "string"
+            },
+            "int": {
+              "title": "interno",
+              "type": "string"
+            },
+            "floor": {
+              "title": "piano",
+              "type": "string"
+            }
+          }
+        },
+        "date_of_birth": {
+          "title": "nato il",
+          "format": "date",
+          "type": "string"
+        },
+        "family_name": {
+          "title": "cognome",
+          "type": "string"
+        },
+        "given_name": {
+          "title": "nome",
+          "type": "string"
+        },
+        "residence": {
+          "properties": {
+            "city": {
+              "title": "citt\u00e0",
+              "x-url": "https://w3id.org/italia/onto/CLV/City",
+              "type": "string"
+            },
+            "place": {
+              "title": "Localit\u00e0",
+              "type": "string"
+            },
+            "country": {
+              "title": "statogit",
+              "x-url": "https://w3id.org/italia/onto/CLV/Country",
+              "type": "string"
+            },
+            "province": {
+              "title": "provincia",
+              "x-url": "https://w3id.org/italia/onto/CLV/Province",
+              "type": "string"
+            },
+            "region": {
+              "type": "string"
+            },
+            "zip_code": {
+              "title": "cap",
+              "type": "string"
+            },
+            "street": {
+              "title": "via",
+              "type": "string"
+            },
+            "int": {
+              "title": "interno",
+              "type": "string"
+            },
+            "floor": {
+              "title": "piano",
+              "type": "string"
+            }
+          }
+        },
+        "tax_code": {
+          "description": "Il codice fiscale.",
+          "example": "RSSMRA75L01H501A",
+          "externalDocs": {
+            "url": "https://w3id.org/italia/onto/CPV/taxCode"
+          },
+          "pattern": "/^(?:(?:[B-DF-HJ-NP-TV-Z]|[AEIOU])[AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}[\\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[1256LMRS][\\dLMNP-V])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM])(?:[A-MZ][1-9MNP-V][\\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$/i",
+          "type": "string"
+        }
+      }
     },
-    "rating": {
-      "type": "integer",
-      "maximum": 5
-    },
-    "recurrence": {
-      "type": "string",
-      "enum": ["Never", "Daily", "Weekly", "Monthly"]
-    },
-    "recurrence_interval": {
-      "type": "integer"
+    "segnalazione": {
+      "properties": {
+        "asl": {
+          "type": "string"
+        },
+        "data": {
+          "type": "string"
+        },
+        "regione": {
+          "type": "string"
+        }
+      }
     }
   },
-  "required": ["name", "due_date"]
+  "type": "object"
 }

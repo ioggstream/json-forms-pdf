@@ -410,6 +410,14 @@ version = "0.1.9"
 
 [[package]]
 category = "main"
+description = "xfdfgen is a Python library for creating xfdf files that can be used to populate pdf form fields."
+name = "xfdfgen"
+optional = false
+python-versions = ">=3.7"
+version = "0.4"
+
+[[package]]
+category = "main"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 marker = "python_version < \"3.8\""
 name = "zipp"
@@ -422,7 +430,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "2c2473b1da7ae22127fda474575760d69737c05f0434db1807d8234f4af218fd"
+content-hash = "c9acdd4a573acf4e09123d62c383f18d428696048e805def5d98ca380150fc0c"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -629,6 +637,10 @@ traitlets = [
 wcwidth = [
     {file = "wcwidth-0.1.9-py2.py3-none-any.whl", hash = "sha256:cafe2186b3c009a04067022ce1dcd79cb38d8d65ee4f4791b8888d6599d1bbe1"},
     {file = "wcwidth-0.1.9.tar.gz", hash = "sha256:ee73862862a156bf77ff92b09034fc4825dd3af9cf81bc5b360668d425f3c5f1"},
+]
+xfdfgen = [
+    {file = "xfdfgen-0.4-py3-none-any.whl", hash = "sha256:1957f973a8d3767713004a0270308adcacfef813d6727d22f151b21ef37a443a"},
+    {file = "xfdfgen-0.4.tar.gz", hash = "sha256:f3a823a1df79d9ebce45e359ef59cdca3eb6b8fbf506ff62a1938937fcac2a90"},
 ]
 zipp = [
     {file = "zipp-3.1.0-py3-none-any.whl", hash = "sha256:aa36550ff0c0b7ef7fa639055d797116ee891440eac1a56f378e2d3179e0320b"},
