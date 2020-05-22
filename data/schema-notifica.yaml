@@ -11,7 +11,7 @@ properties:
                 label: Address Type
                 type: string
             location:
-                $ref: definitions.yaml#/schemas/Location
+                $ref: "definitions.yaml#/schemas/Location"
         title: Order
         type: object
     atto:
@@ -25,22 +25,21 @@ properties:
                 type: string
                 format: date
             indirizzo:
-                $ref: "definitions.yaml/#Location"
+                $ref: "definitions.yaml#/schemas/Location"
             superfici_imponibili:
                 type: array
                 items:
-                    $ref: "definitions.yaml/#Immobile"
+                    $ref: "definitions.yaml#/schemas/Immobile"
                 minItems: 5
                 maxItems: 5
             proprietario:
-                $ref: "definitions.yaml/#Person"
+                $ref: "definitions.yaml#/schemas/Person"
             di_proprieta:
                 type: boolean
             affitto_o_comodato:
                 type: boolean
-        $ref: '#/properties/person'
     person:
-        $ref: definitions.yaml#/schemas/Person
+        $ref: "definitions.yaml#/schemas/Person"
     segnalazione:
         properties:
             asl:

@@ -181,6 +181,19 @@ python-versions = ">=3.5"
 version = "8.3.0"
 
 [[package]]
+category = "main"
+description = "Resolve and bundle openapi v3 specs."
+name = "openapi-resolver"
+optional = false
+python-versions = "*"
+version = "0.0.6"
+
+[package.dependencies]
+pathlib = "*"
+pyyaml = "*"
+six = "*"
+
+[[package]]
 category = "dev"
 description = "Core utilities for Python packages"
 name = "packaging"
@@ -202,6 +215,14 @@ version = "0.7.0"
 
 [package.extras]
 testing = ["docopt", "pytest (>=3.0.7)"]
+
+[[package]]
+category = "main"
+description = "Object-oriented filesystem paths"
+name = "pathlib"
+optional = false
+python-versions = "*"
+version = "1.0.1"
 
 [[package]]
 category = "dev"
@@ -290,14 +311,6 @@ name = "pyparsing"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 version = "2.4.7"
-
-[[package]]
-category = "main"
-description = "PDF toolkit"
-name = "pypdf"
-optional = false
-python-versions = "*"
-version = "1.13"
 
 [[package]]
 category = "main"
@@ -409,7 +422,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "81fd991f4e8dd4a433c9efdf2826f0fd989ef192787299668e77e0ee27eed29c"
+content-hash = "2c2473b1da7ae22127fda474575760d69737c05f0434db1807d8234f4af218fd"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -469,6 +482,9 @@ more-itertools = [
     {file = "more-itertools-8.3.0.tar.gz", hash = "sha256:558bb897a2232f5e4f8e2399089e35aecb746e1f9191b6584a151647e89267be"},
     {file = "more_itertools-8.3.0-py3-none-any.whl", hash = "sha256:7818f596b1e87be009031c7653d01acc46ed422e6656b394b0f765ce66ed4982"},
 ]
+openapi-resolver = [
+    {file = "openapi_resolver-0.0.6.tar.gz", hash = "sha256:2cb47e606967dfa7686f269f34037f548acf39c64f3f8592eaafe5f01dae6dca"},
+]
 packaging = [
     {file = "packaging-20.3-py2.py3-none-any.whl", hash = "sha256:82f77b9bee21c1bafbf35a84905d604d5d1223801d639cf3ed140bd651c08752"},
     {file = "packaging-20.3.tar.gz", hash = "sha256:3c292b474fda1671ec57d46d739d072bfd495a4f51ad01a055121d81e952b7a3"},
@@ -476,6 +492,9 @@ packaging = [
 parso = [
     {file = "parso-0.7.0-py2.py3-none-any.whl", hash = "sha256:158c140fc04112dc45bca311633ae5033c2c2a7b732fa33d0955bad8152a8dd0"},
     {file = "parso-0.7.0.tar.gz", hash = "sha256:908e9fae2144a076d72ae4e25539143d40b8e3eafbaeae03c1bfe226f4cdf12c"},
+]
+pathlib = [
+    {file = "pathlib-1.0.1.tar.gz", hash = "sha256:6940718dfc3eff4258203ad5021090933e5c04707d5ca8cc9e73c94a7894ea9f"},
 ]
 pexpect = [
     {file = "pexpect-4.8.0-py2.py3-none-any.whl", hash = "sha256:0b48a55dcb3c05f3329815901ea4fc1537514d6ba867a152b581d69ae3710937"},
@@ -533,9 +552,6 @@ pygments = [
 pyparsing = [
     {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},
     {file = "pyparsing-2.4.7.tar.gz", hash = "sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1"},
-]
-pypdf = [
-    {file = "pyPdf-1.13.tar.gz", hash = "sha256:3aede4c3c9c6ad07c98f059f90db0b09ed383f7c791c46100f649e1cabda0e3b"},
 ]
 pypdf2 = [
     {file = "PyPDF2-1.26.0.tar.gz", hash = "sha256:e28f902f2f0a1603ea95ebe21dff311ef09be3d0f0ef29a3e44a932729564385"},

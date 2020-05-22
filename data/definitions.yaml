@@ -237,26 +237,33 @@ schemas:
   Location:
     properties:
       city:
-        description: https://w3id.org/italia/onto/CLV/City
+        title: città
+        x-url: https://w3id.org/italia/onto/CLV/City
         type: string
       place:
-        description: Località
+        title: Località
         type: string
       country:
-        description: https://w3id.org/italia/onto/CLV/Country
+        title: statogit 
+        x-url: https://w3id.org/italia/onto/CLV/Country
         type: string
       province:
-        description: https://w3id.org/italia/onto/CLV/Province
+        title: provincia
+        x-url: https://w3id.org/italia/onto/CLV/Province
         type: string
       region:
         type: string
       zip_code:
+        title: cap
         type: string
       street:
+        title: via
         type: string
       int:
+        title: interno
         type: string
       floor:
+        title: piano
         type: string
   Longitude:
     description: |-
@@ -306,11 +313,14 @@ schemas:
       birth_place:
         $ref: 'definitions.yaml#/schemas/Location'
       date_of_birth:
+        title: nato il
         format: date
         type: string
       family_name:
+        title: cognome
         type: string
       given_name:
+        title: nome
         type: string
       residence:
         $ref: 'definitions.yaml#/schemas/Location'

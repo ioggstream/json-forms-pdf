@@ -43,7 +43,7 @@ elements:
   description: |-
     consapevole delle sanzioni blablabla **DICHARA**
   elements:
-  - type: HorizontalLayout
+  - type: VerticalLayout
     elements:
     - type: Control
       label: Inizio detenzione
@@ -51,6 +51,47 @@ elements:
     - type: Control
       label: Dal
       scope: "#/properties/inizio_detenzione/properties/data_inizio_detenzione"
+    - type: Group
+      label: Titolo di Occupazione
+      elements:
+      - type: Control
+        scope: "#/properties/inizio_detenzione/properties/di_proprieta"
+      - type: Control
+        scope: "#/properties/inizio_detenzione/properties/affitto_o_comodato"
+
+      - type: HorizontalLayout
+        label: eventuali dati proprietario
+        elements:
+        - type: Control
+          scope: "#/properties/inizio_detenzione/properties/proprietario/properties/given_name"
+        - type: Control
+          scope: "#/properties/inizio_detenzione/properties/proprietario/properties/family_name"
+        - type: Control
+          scope: "#/properties/inizio_detenzione/properties/proprietario/properties/residence/properties/street"
+        - type: Control
+          scope: "#/properties/inizio_detenzione/properties/proprietario/properties/residence/properties/city"
+        - type: Control
+          scope: "#/properties/inizio_detenzione/properties/proprietario/properties/residence/properties/province"
+
+    - type: HorizontalLayout
+      label: Indirizzo immobile
+      elements:
+      - type: Control
+        scope: "#/properties/inizio_detenzione/properties/indirizzo/properties/street"
+      - type: Control
+        scope: "#/properties/inizio_detenzione/properties/indirizzo/properties/int"
+      - type: Control
+        scope: "#/properties/inizio_detenzione/properties/indirizzo/properties/floor"
+      - type: Control
+        scope: "#/properties/inizio_detenzione/properties/indirizzo/properties/place"
+      - type: Control
+        scope: "#/properties/inizio_detenzione/properties/indirizzo/properties/city"
+      - type: Control
+        scope: "#/properties/inizio_detenzione/properties/indirizzo/properties/province"
+      - type: Control
+        scope: "#/properties/inizio_detenzione/properties/indirizzo/properties/zip_code"
+
+
 - type: Group
   label: Address
   elements:

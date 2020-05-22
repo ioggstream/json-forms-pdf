@@ -5,6 +5,16 @@ elements:
   type: Control
 - label: G1.1
   type: Group
+  description: |-
+    This long text can be rendered in the spec.
+    ## cia
+    belli antani
+    come se fosse
+    - sb
+    - lind
+    - ola
+
+    ### safas
   elements:
   - scope: '#/properties/given_name'
     type: Control

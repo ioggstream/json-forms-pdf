@@ -3,15 +3,17 @@ import json
 import logging
 import shlex
 import xml.etree.ElementTree as ET
-from os import getcwd
+from os import chdir, getcwd
 from os.path import basename
 from pathlib import Path
 from subprocess import run
-from markdown import markdown
+
 import jsonref
 import jsonschema
 import pytest
 import yaml
+from markdown import markdown
+from openapi_resolver import OpenapiResolver
 
 log = logging.getLogger()
 logging.basicConfig(level=logging.DEBUG)
@@ -50,7 +52,8 @@ class HtmlRender(object):
         self.ui = ui
         # Use jsonref.loads to resolve $ref in schema. If we want to use external
         # references we need external resolver.
-        self.schema = jsonref.loads(json.dumps(schema))
+        schema_resolve_external = OpenapiResolver(schema).resolve()
+        self.schema = jsonref.loads(json.dumps(schema_resolve_external))
         self.resolver = jsonschema.RefResolver.from_schema(self.schema)
         self.font_size = font_size
         self.font_size_form = font_size_form or font_size
@@ -73,7 +76,7 @@ class HtmlRender(object):
         schema = yaml.safe_load(Path(schema_path).read_text())
         return HtmlRender(ui, schema)
 
-    def layout_to_form(self, layout, parent=None, attrib=None):
+    def layout_to_form(self, layout, parent=None, attrib=None, level=1):
         parent = parent or self.form
         log.warning("layout: %r, parent: %r", layout["type"], parent)
 
@@ -98,8 +101,8 @@ class HtmlRender(object):
             attrib={"class": layout["type"], "label": layout.get("label", "")},
         )
         if "label" in layout:
-            h1 = ET.SubElement(child, "h1")
-            h1.text = layout["label"]
+            heading = ET.SubElement(child, f"h{level}")
+            heading.text = layout["label"]
         else:
             ET.SubElement(child, "br")
         if "description" in layout:
@@ -107,7 +110,7 @@ class HtmlRender(object):
                 ET.fromstring(f"<div>" + markdown(layout["description"]) + "</div>")
             )
 
-        for e in layout["elements"]:
+        for e in layout.get("elements", []):
             # import pdb; pdb.set_trace()
             log.warning(
                 "adding %r.%r to %r.%r",
@@ -116,7 +119,7 @@ class HtmlRender(object):
                 child,
                 child.attrib.get("label"),
             )
-            self.layout_to_form(e, child, attrib=elements_attrib)
+            self.layout_to_form(e, child, attrib=elements_attrib, level=level + 1)
 
     def element_to_form(self, element, attrib=None):
         attrib = attrib or {}
@@ -139,7 +142,9 @@ class HtmlRender(object):
             raise NotImplementedError(field_type)
 
         property_name = basename(schema_url)
-        field_label = element.get("label") or labelize(schema_url)
+        field_label = (
+            element.get("label") or schema.get("title") or labelize(schema_url)
+        )
 
         # render = self.render_function(property_name, schema, self.data)
         params = {
@@ -213,11 +218,16 @@ def test_get_fields():
 def harn_form_render(request):
     label = request.param
     log.warning("Run test with, %r", label)
-    yaml_file = Path(f"data/ui-{label}.yaml")
-    if yaml_file.is_file():
-        yaml_data = yaml.safe_load(yaml_file.read_text())
-        json_data = json.dumps(yaml_data)
-        Path(f"data/ui-{label}.json").write_text(json_data)
+    for ftype in ("ui", "schema"):
+        yaml_file = Path(f"data/{ftype}-{label}.yaml")
+        if yaml_file.is_file():
+            yaml_data = yaml.safe_load(yaml_file.read_text())
+            chdir("data")
+            yaml_resolved = OpenapiResolver(yaml_data).resolve()
+            chdir("..")
+            json_data = json.dumps(yaml_resolved, indent=2)
+            Path(f"data/{ftype}-{label}.json").write_text(json_data)
+
     fr = HtmlRender.from_file(f"data/ui-{label}.json", f"data/schema-{label}.json")
     return fr, label
 

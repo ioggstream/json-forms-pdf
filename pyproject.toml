@@ -9,10 +9,10 @@ python = "^3.7"
 reportlab = "^3.5.42"
 pyyaml = "^5.3.1"
 jsonschema = "^3.2.0"
-pypdf = "^1.13"
 pypdf2 = "^1.26.0"
 jsonref = "^0.2"
 markdown = "^3.2.2"
+openapi-resolver = "^0.0.6"
 
 [tool.poetry.dev-dependencies]
 ipython = "^7.14.0"
