@@ -2,79 +2,68 @@
 type: VerticalLayout
 label: VL
 elements:
-- type: Group
-  label: Dati della segnalazione
+- type: HorizontalLayout
   description: |-
-    This long text can be rendered in the spec.
-    ## cia
-    belli antani
-    come se fosse
-    - sb
-    - lind
-    - ola
-
-    ### safas
+    ![Alt text](data/header-notifica.png)
   elements:
-  - type: HorizontalLayout
-    elements:
     - type: Control
-      scope: "#/properties/segnalazione/properties/data"
-    - type: Control
-      scope: "#/properties/segnalazione/properties/regione"
-    - type: Control
-      scope: "#/properties/segnalazione/properties/asl"
+      label: Denuncia di
+      scope: "#/properties/atto"
 - type: Group
-  label: Person
+  label: Il sottoscritto
   elements:
   - type: HorizontalLayout
     elements:
     - type: Control
-      scope: "#/properties/person/properties/firstName"
+      scope: "#/properties/person/properties/given_name"
     - type: Control
-      scope: "#/properties/person/properties/lastName"
+      scope: "#/properties/person/properties/family_name"
     - type: Control
-      scope: "#/properties/person/properties/telephone"
+      scope: "#/properties/person/properties/tax_code"
+  - type: HorizontalLayout
+    elements:
     - type: Control
-      scope: "#/properties/person/properties/mobile"
+      label: Nato a
+      scope: "#/properties/person/properties/date_of_birth"
     - type: Control
-      scope: "#/properties/person/properties/email"
+      scope: "#/properties/person/properties/birth_place/properties/city"
+    - type: Control
+      scope: "#/properties/person/properties/birth_place/properties/province"
+  - type: HorizontalLayout
+    label: Residente in
+    elements:
+    - type: Control
+      scope: "#/properties/person/properties/residence/properties/city"
+    - type: Control
+      scope: "#/properties/person/properties/residence/properties/province"
+    - type: Control
+      scope: "#/properties/person/properties/residence/properties/country"
 - type: Group
-  label: Paziente
+  label: Dichiarazione
+  description: |-
+    consapevole delle sanzioni blablabla **DICHARA**
   elements:
   - type: HorizontalLayout
     elements:
     - type: Control
-      scope: "#/properties/paziente/properties/firstName"
+      label: Inizio detenzione
+      scope: "#/properties/inizio_detenzione/properties/is_inizio_detenzione"
     - type: Control
-      scope: "#/properties/paziente/properties/lastName"
-    - type: Control
-      scope: "#/properties/paziente/properties/telephone"
-    - type: Control
-      scope: "#/properties/paziente/properties/mobile"
-    - type: Control
-      scope: "#/properties/paziente/properties/email"
-  - type: HorizontalLayout
-    elements:
-    - type: Control
-      scope: "#/properties/person/properties/age"
-    - type: Control
-      label: Address
-      scope: "#/properties/person/properties/shippingAddress"
+      label: Dal
+      scope: "#/properties/inizio_detenzione/properties/data_inizio_detenzione"
 - type: Group
   label: Address
   elements:
   - type: HorizontalLayout
     elements:
     - type: Control
-      scope: "#/properties/person/properties/shippingAddress"
-    - type: Control
-      scope: "#/properties/address/properties/street"
+      scope: "#/properties/address/properties/location/properties/street"
   - type: HorizontalLayout
     elements:
     - type: Control
-      scope: "#/properties/address/properties/city"
+      scope: "#/properties/address/properties/location/properties/city"
     - type: Control
-      scope: "#/properties/address/properties/zipCode"
+      scope: "#/properties/address/properties/location/properties/zip_code"
 __filemeta:
   name: uischema
   filename: src/pages/docs/components/multiple-forms/FormsExamples.js

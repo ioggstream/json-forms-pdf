@@ -1,0 +1,32 @@
+__filemeta:
+    filename: src/pages/docs/components/multiple-forms/FormsExamples.js
+    name: schema
+properties:
+    YesNoUnknown:
+        properties: 'null'
+    address:
+        properties:
+            addressId:
+                enum: '[Home Address 1, Home Address 2, Workplace]'
+                label: Address Type
+                type: string
+            location:
+                $ref: definitions.yaml#/schemas/Location
+        title: Order
+        type: object
+    atto:
+        enum: '[cessazione, variazione, inizio, riduzione]'
+        type: string
+    inizio_detenzione:
+        $ref: '#/properties/person'
+    person:
+        $ref: definitions.yaml#/schemas/Person
+    segnalazione:
+        properties:
+            asl:
+                type: string
+            data:
+                type: string
+            regione:
+                type: string
+type: object

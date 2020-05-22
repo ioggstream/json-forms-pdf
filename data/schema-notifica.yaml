@@ -1,0 +1,52 @@
+__filemeta:
+    filename: src/pages/docs/components/multiple-forms/FormsExamples.js
+    name: schema
+properties:
+    YesNoUnknown:
+        properties: 'null'
+    address:
+        properties:
+            addressId:
+                enum: ['Home Address 1', 'Home Address 2', 'Workplace']
+                label: Address Type
+                type: string
+            location:
+                $ref: definitions.yaml#/schemas/Location
+        title: Order
+        type: object
+    atto:
+        enum: [cessazione, variazione, inizio, "riduzione"]
+        type: string
+    inizio_detenzione:
+        properties:
+            is_inizio_detenzione:
+                type: boolean
+            data_inizio_detenzione:
+                type: string
+                format: date
+            indirizzo:
+                $ref: "definitions.yaml/#Location"
+            superfici_imponibili:
+                type: array
+                items:
+                    $ref: "definitions.yaml/#Immobile"
+                minItems: 5
+                maxItems: 5
+            proprietario:
+                $ref: "definitions.yaml/#Person"
+            di_proprieta:
+                type: boolean
+            affitto_o_comodato:
+                type: boolean
+        $ref: '#/properties/person'
+    person:
+        $ref: definitions.yaml#/schemas/Person
+    segnalazione:
+        properties:
+            asl:
+                type: string
+            data:
+                type: string
+            regione:
+                type: string
+type: object
