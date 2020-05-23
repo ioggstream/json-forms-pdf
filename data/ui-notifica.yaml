@@ -95,7 +95,7 @@ elements:
       label: Dati immobile
       elements:
       - type: Control
-        scope: "#/properties/inizio_detenzione/properties/indirizzo/properties/street"
+        scope: "#/properties/inizio_detenzione/properties/superfici_imponibili"
 
 - type: Group
   label: Address

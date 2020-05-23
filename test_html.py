@@ -4,12 +4,13 @@ import logging
 import shlex
 import xml.etree.ElementTree as ET
 from os import chdir, getcwd
-from os.path import basename
+from os.path import basename, dirname
 from pathlib import Path
 from subprocess import run
 
 import jsonref
 import jsonschema
+import PyPDF2
 import pytest
 import yaml
 from markdown import markdown
@@ -81,9 +82,17 @@ class HtmlRender(object):
         log.warning("layout: %r, parent: %r", layout["type"], parent)
 
         if layout["type"] == "Control":
-            child = self.element_to_form(layout, attrib)
+            schema_url, schema = self.resolver.resolve(layout["scope"])
+            label = layout.get("label")
+
+            if schema["type"] != "array":
+                child = self.element_to_form2(schema_url, schema, label, attrib)
+                parent.append(child)
+                return
+            child = render_array(schema_url, schema, label)
             parent.append(child)
             return
+            raise NotImplementedError(schema["type"])
 
         elements_attrib = {}
         if layout["type"] == "Group":
@@ -121,37 +130,23 @@ class HtmlRender(object):
             )
             self.layout_to_form(e, child, attrib=elements_attrib, level=level + 1)
 
-    def element_to_form(self, element, attrib=None):
+    @staticmethod
+    def element_to_form2(schema_url, schema, label, attrib=None):
         attrib = attrib or {}
+
         if "class" in attrib:
             attrib["class"] += " form-field"
-        d = ET.Element("span", attrib=attrib)
-        assert "type" in element
-        assert "scope" in element
-
-        supported_types = {
-            "string",
-            "number",
-            "integer",
-            "boolean",
-        }
-
-        schema_url, schema = self.resolver.resolve(element["scope"])
+        supported_types = {"string", "number", "integer", "boolean"}
         field_type = schema["type"]
         if field_type not in supported_types:
             raise NotImplementedError(field_type)
 
-        property_name = basename(schema_url)
-        field_label = (
-            element.get("label") or schema.get("title") or labelize(schema_url)
-        )
+        field_label = label or schema.get("title") or labelize(schema_url)
 
-        # render = self.render_function(property_name, schema, self.data)
         params = {
             "name": schema_url,
-            "forceBorder": True,
         }
-
+        d = ET.Element("span", attrib=attrib)
         text = ET.SubElement(d, "text")
         text.text = field_label
 
@@ -183,7 +178,7 @@ class HtmlRender(object):
                 label.text = v
             return d
 
-        input = ET.SubElement(
+        ET.SubElement(
             d,
             "input",
             attrib={
@@ -201,18 +196,34 @@ def labelize(s):
 
 
 def test_get_fields():
-    import PyPDF2
-
-    f = PyPDF2.PdfFileReader("simple.pdf")
-    ff = f.getFields()
+    ff = pdf_get_fields("simple.pdf")
     assert "#/properties/given_name" in ff
+
+
+def pdf_get_fields(fpath):
+    return PyPDF2.PdfFileReader("simple.pdf").getFields()
+
+
+def bundle_file(schema=None, fpath=None):
+    if not (schema or fpath):
+        raise ValueError("Pass at least one of schema and fpath")
+    yaml_data = schema or yaml.safe_load(Path(fpath).read_text())
+    if fpath:
+        chdir(dirname(fpath))
+    try:
+        yaml_resolved = OpenapiResolver(yaml_data).resolve()
+    finally:
+        if fpath:
+            chdir("..")
+    return yaml_resolved
 
 
 @pytest.fixture(
     scope="module",
     params=[
         # "group", "simple", "person",
-        "notifica"
+        # "notifica",
+        "array"
     ],
 )
 def harn_form_render(request):
@@ -221,11 +232,7 @@ def harn_form_render(request):
     for ftype in ("ui", "schema"):
         yaml_file = Path(f"data/{ftype}-{label}.yaml")
         if yaml_file.is_file():
-            yaml_data = yaml.safe_load(yaml_file.read_text())
-            chdir("data")
-            yaml_resolved = OpenapiResolver(yaml_data).resolve()
-            chdir("..")
-            json_data = json.dumps(yaml_resolved, indent=2)
+            json_data = json.dumps(bundle_file(fpath=yaml_file), indent=2)
             Path(f"data/{ftype}-{label}.json").write_text(json_data)
 
     fr = HtmlRender.from_file(f"data/ui-{label}.json", f"data/schema-{label}.json")
@@ -247,3 +254,50 @@ def test_group(harn_form_render):
     log.warning(convert_command)
     run(shlex.split(convert_command))
     run(shlex.split(f"xdg-open {dpath}.pdf"))
+
+
+def test_array():
+    ui = bundle_file(fpath="data/ui-array.yaml")
+    schema = bundle_file(fpath="data/schema-array.yaml")
+    render = HtmlRender(ui, schema)
+    name, schema = render.resolver.resolve("#/properties/basic/properties/fields")
+    ui_array(name, schema)
+
+
+def ui_array(name, schema):
+    assert "array" == schema.get("type")
+    item_schema = schema["items"]
+    vl = {"type": "VerticalLayout", "elements": []}
+    for i in range(2):
+        hl = {"type": "HorizontalLayout", "elements": []}
+        vl["elements"].append(hl)
+        if "properties" in item_schema:
+            for k in item_schema["properties"]:
+                hl["elements"].append(
+                    {"type": "Control", "scope": f"{name}_{i}/properties/{k}"}
+                )
+
+        else:
+            hl["elements"].append({"type": "Control", "scope": f"{name}_{i}"})
+
+    return vl
+
+
+def render_array(schema_url, schema, label):
+    assert "array" == schema.get("type")
+    item_schema = schema["items"]
+    vl = ET.Element("div", attrib={"class": "VerticalLayout array"})
+    for i in range(2):
+        hl = ET.SubElement(vl, "div", attrib={"class": "HorizontalLayout array"})
+        if "properties" in item_schema:
+            for k, property_schema in item_schema["properties"].items():
+                property_url = f"{schema_url}_{i}/properties/{k}"
+                hl.append(
+                    HtmlRender.element_to_form2(property_url, property_schema, label)
+                )
+
+        else:
+            property_url = f"{schema_url}_{i}"
+            hl.append(HtmlRender.element_to_form2(property_url, item_schema, label))
+
+    return vl

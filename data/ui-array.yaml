@@ -1,0 +1,7 @@
+label: G1
+type: VerticalLayout
+elements:
+- type: Control
+  scope: "#/properties/basic/properties/fields"
+- type: Control
+  scope: "#/properties/basic/properties/list_string"

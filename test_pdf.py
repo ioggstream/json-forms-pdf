@@ -1,20 +1,19 @@
 # simple_checkboxes.py
 import logging
+from os.path import basename
+from pathlib import Path
 
-from reportlab.pdfgen import canvas
+import jsonschema
+import pytest
 
 # from reportlab.pdfbase import pdfform
 import yaml
-from pathlib import Path
-import jsonschema
+from reportlab.pdfgen import canvas
 
 uischema = yaml.safe_load(Path("jsonforms-react-seed/src/uischema.json").read_text())
 form_schema = yaml.safe_load(Path("jsonforms-react-seed/src/schema.json").read_text())
 form_fields = jsonschema.RefResolver.from_schema(form_schema)
 
-import pytest
-
-from os.path import basename
 
 log = logging.getLogger()
 logging.basicConfig(level=logging.DEBUG)

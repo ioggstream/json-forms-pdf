@@ -162,6 +162,16 @@
               ],
               "label": "Indirizzo immobile",
               "type": "HorizontalLayout"
+            },{
+              "type": "VerticalLayout",
+              "label": "Dati immobili",
+              "elements": [
+                                {
+                  "scope": "#/properties/inizio_detenzione/properties/superfici_imponibili",
+                  "type": "Control"
+
+                }
+              ]
             }
           ],
           "type": "VerticalLayout"
