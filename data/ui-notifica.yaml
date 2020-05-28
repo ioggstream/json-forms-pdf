@@ -51,6 +51,9 @@ elements:
     - type: Control
       label: Dal
       scope: "#/properties/inizio_detenzione/properties/data_inizio_detenzione"
+    - type: Control
+      label: Numero componenti nucleo familiare
+      scope: "#/properties/inizio_detenzione/properties/numero_componenti"
     - type: Group
       label: Titolo di Occupazione
       elements:
@@ -59,13 +62,17 @@ elements:
       - type: Control
         scope: "#/properties/inizio_detenzione/properties/affitto_o_comodato"
 
-      - type: HorizontalLayout
-        label: eventuali dati proprietario
+      - type: Group
         elements:
-        - type: Control
-          scope: "#/properties/inizio_detenzione/properties/proprietario/properties/given_name"
-        - type: Control
-          scope: "#/properties/inizio_detenzione/properties/proprietario/properties/family_name"
+        - type: HorizontalLayout
+          label: eventuali dati proprietario
+          elements:
+          - type: Control
+            scope: "#/properties/inizio_detenzione/properties/proprietario/properties/given_name"
+          - type: Control
+            scope: "#/properties/inizio_detenzione/properties/proprietario/properties/family_name"
+        - type: HorizontalLayout
+          label: indirizzo proprietario
         - type: Control
           scope: "#/properties/inizio_detenzione/properties/proprietario/properties/residence/properties/street"
         - type: Control

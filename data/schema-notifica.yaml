@@ -17,6 +17,32 @@ properties:
     atto:
         enum: [cessazione, variazione, inizio, "riduzione"]
         type: string
+    cessazione_detenzione:
+        properties:
+            is_cessazione_detenzione:
+                type: boolean
+            data_cessazione:
+                type: string
+                format: date
+            is_trasferimento_altro_comune:
+                type: boolean
+            indirizzo_nuovo_comune:
+                $ref: "definitions.yaml#/schemas/Location"
+
+            is_trasferimento_stesso_comune:
+                type: boolean
+            is_decesso_titolare:
+                type: boolean
+            titolare_deceduto:
+
+            indirizzo_immobile:
+                $ref: "definitions.yaml#/schemas/Location"
+            superfici_imponibili:
+                type: array
+                items:
+                    $ref: "definitions.yaml#/schemas/Immobile"
+                minItems: 2
+                maxItems: 2
     inizio_detenzione:
         properties:
             is_inizio_detenzione:
@@ -24,6 +50,10 @@ properties:
             data_inizio_detenzione:
                 type: string
                 format: date
+            componenti_nucleo_familiare:
+                type: integer
+                format: int32
+                x-maxLength: 3
             indirizzo:
                 $ref: "definitions.yaml#/schemas/Location"
             superfici_imponibili:

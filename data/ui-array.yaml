@@ -1,7 +1,37 @@
-label: G1
+label: Richiesta certificazione anagrafica online
 type: VerticalLayout
 elements:
-- type: Control
-  scope: "#/properties/basic/properties/fields"
-- type: Control
-  scope: "#/properties/basic/properties/list_string"
+- type: Group
+  label: Il sottoscritto
+  elements:
+  - type: HorizontalLayout
+    elements:
+    - type: Control
+      scope: "#/properties/dichiarante/properties/given_name"
+    - type: Control
+      scope: "#/properties/dichiarante/properties/family_name"
+
+  - type: HorizontalLayout
+    elements:
+    - type: Control
+      label: Nato a
+      scope: "#/properties/dichiarante/properties/date_of_birth"
+    - type: Control
+      scope: "#/properties/dichiarante/properties/birth_place/properties/city"
+    - type: Control
+      scope: "#/properties/dichiarante/properties/birth_place/properties/province"
+    - type: Control
+      scope: "#/properties/dichiarante/properties/citizenship"
+
+  - type: HorizontalLayout
+    label: Residente in
+    elements:
+    - type: Control
+      label: Via
+      scope: "#/properties/dichiarante/properties/residence/streen"
+    - type: Control
+      scope: "#/properties/dichiarante/properties/residence/properties/city"
+    - type: Control
+      scope: "#/properties/dichiarante/properties/residence/properties/province"
+    - type: Control
+      scope: "#/properties/dichiarante/properties/citizenship"

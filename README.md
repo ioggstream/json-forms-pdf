@@ -34,5 +34,5 @@ Then wkhtmltopdf with form support
 to convert the HTML to PDF.
 
 ```bash
-docker run --rm -v $(pwd):/data madnight/docker-alpine-wkhtmltopdf /data/test.html /data/test.pdf
+docker run --rm -v $(pwd):/data madnight/docker-alpine-wkhtmltopdf --enable-forms /data/test.html /data/test.pdf
 ```

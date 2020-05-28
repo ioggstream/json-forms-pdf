@@ -1,34 +1,15 @@
 {
-  "__filemeta": {
-    "filename": "src/pages/docs/components/multiple-forms/FormsExamples.js",
-    "name": "uischema"
-  },
   "elements": [
     {
-      "description": "![Alt text](data/header-notifica.png)",
-      "elements": [
-        {
-          "label": "Denuncia di",
-          "scope": "#/properties/atto",
-          "type": "Control"
-        }
-      ],
-      "type": "HorizontalLayout"
-    },
-    {
       "elements": [
         {
           "elements": [
             {
-              "scope": "#/properties/person/properties/given_name",
+              "scope": "#/properties/richiedente/properties/given_name",
               "type": "Control"
             },
             {
-              "scope": "#/properties/person/properties/family_name",
-              "type": "Control"
-            },
-            {
-              "scope": "#/properties/person/properties/tax_code",
+              "scope": "#/properties/richiedente/properties/family_name",
               "type": "Control"
             }
           ],
@@ -37,16 +18,17 @@
         {
           "elements": [
             {
-              "label": "Nato a",
-              "scope": "#/properties/person/properties/date_of_birth",
+              "label": "Nato il",
+              "scope": "#/properties/richiedente/properties/date_of_birth",
               "type": "Control"
             },
             {
-              "scope": "#/properties/person/properties/birth_place/properties/city",
+              "label": "a",
+              "scope": "#/properties/richiedente/properties/birth_place/properties/city",
               "type": "Control"
             },
             {
-              "scope": "#/properties/person/properties/birth_place/properties/province",
+              "scope": "#/properties/richiedente/properties/birth_place/properties/province",
               "type": "Control"
             }
           ],
@@ -55,19 +37,33 @@
         {
           "elements": [
             {
-              "scope": "#/properties/person/properties/residence/properties/city",
+              "label": "Via",
+              "scope": "#/properties/richiedente/properties/residence/properties/street",
               "type": "Control"
             },
             {
-              "scope": "#/properties/person/properties/residence/properties/province",
+              "scope": "#/properties/richiedente/properties/residence/properties/city",
               "type": "Control"
             },
             {
-              "scope": "#/properties/person/properties/residence/properties/country",
+              "scope": "#/properties/richiedente/properties/residence/properties/province",
               "type": "Control"
             }
           ],
           "label": "Residente in",
+          "type": "HorizontalLayout"
+        },
+        {
+          "elements": [
+            {
+              "scope": "#/properties/richiedente/properties/email",
+              "type": "Control"
+            },
+            {
+              "scope": "#/properties/richiedente/properties/phone",
+              "type": "Control"
+            }
+          ],
           "type": "HorizontalLayout"
         }
       ],
@@ -75,140 +71,104 @@
       "type": "Group"
     },
     {
-      "description": "consapevole delle sanzioni blablabla **DICHARA**",
       "elements": [
         {
           "elements": [
             {
-              "label": "Inizio detenzione",
-              "scope": "#/properties/inizio_detenzione/properties/is_inizio_detenzione",
-              "type": "Control"
+              "scope": "#/properties/documento_richiesto",
+              "type": "Control",
+              "x-br": true
             },
             {
-              "label": "Dal",
-              "scope": "#/properties/inizio_detenzione/properties/data_inizio_detenzione",
-              "type": "Control"
-            },
-            {
-              "elements": [
-                {
-                  "scope": "#/properties/inizio_detenzione/properties/di_proprieta",
-                  "type": "Control"
-                },
-                {
-                  "scope": "#/properties/inizio_detenzione/properties/affitto_o_comodato",
-                  "type": "Control"
-                },
-                {
-                  "elements": [
-                    {
-                      "scope": "#/properties/inizio_detenzione/properties/proprietario/properties/given_name",
-                      "type": "Control"
-                    },
-                    {
-                      "scope": "#/properties/inizio_detenzione/properties/proprietario/properties/family_name",
-                      "type": "Control"
-                    },
-                    {
-                      "scope": "#/properties/inizio_detenzione/properties/proprietario/properties/residence/properties/street",
-                      "type": "Control"
-                    },
-                    {
-                      "scope": "#/properties/inizio_detenzione/properties/proprietario/properties/residence/properties/city",
-                      "type": "Control"
-                    },
-                    {
-                      "scope": "#/properties/inizio_detenzione/properties/proprietario/properties/residence/properties/province",
-                      "type": "Control"
-                    }
-                  ],
-                  "label": "eventuali dati proprietario",
-                  "type": "HorizontalLayout"
-                }
-              ],
-              "label": "Titolo di Occupazione",
-              "type": "Group"
-            },
-            {
-              "elements": [
-                {
-                  "scope": "#/properties/inizio_detenzione/properties/indirizzo/properties/street",
-                  "type": "Control"
-                },
-                {
-                  "scope": "#/properties/inizio_detenzione/properties/indirizzo/properties/int",
-                  "type": "Control"
-                },
-                {
-                  "scope": "#/properties/inizio_detenzione/properties/indirizzo/properties/floor",
-                  "type": "Control"
-                },
-                {
-                  "scope": "#/properties/inizio_detenzione/properties/indirizzo/properties/place",
-                  "type": "Control"
-                },
-                {
-                  "scope": "#/properties/inizio_detenzione/properties/indirizzo/properties/city",
-                  "type": "Control"
-                },
-                {
-                  "scope": "#/properties/inizio_detenzione/properties/indirizzo/properties/province",
-                  "type": "Control"
-                },
-                {
-                  "scope": "#/properties/inizio_detenzione/properties/indirizzo/properties/zip_code",
-                  "type": "Control"
-                }
-              ],
-              "label": "Indirizzo immobile",
-              "type": "HorizontalLayout"
-            },{
-              "type": "VerticalLayout",
-              "label": "Dati immobili",
-              "elements": [
-                                {
-                  "scope": "#/properties/inizio_detenzione/properties/superfici_imponibili",
-                  "type": "Control"
-
-                }
-              ]
-            }
-          ],
-          "type": "VerticalLayout"
-        }
-      ],
-      "label": "Dichiarazione",
-      "type": "Group"
-    },
-    {
-      "elements": [
-        {
-          "elements": [
-            {
-              "scope": "#/properties/address/properties/location/properties/street",
+              "scope": "#/properties/documento_richiesto_altro",
               "type": "Control"
             }
           ],
+          "label": "Il rilascio della sottoelencata certificazione(contrassegnata con X)  *  **",
           "type": "HorizontalLayout"
         },
         {
           "elements": [
             {
-              "scope": "#/properties/address/properties/location/properties/city",
-              "type": "Control"
+              "elements": [
+                {
+                  "scope": "#/properties/soggetto/properties/given_name",
+                  "type": "Control"
+                },
+                {
+                  "scope": "#/properties/soggetto/properties/family_name",
+                  "type": "Control"
+                }
+              ],
+              "type": "HorizontalLayout"
             },
             {
-              "scope": "#/properties/address/properties/location/properties/zip_code",
-              "type": "Control"
+              "elements": [
+                {
+                  "label": "Nato a",
+                  "scope": "#/properties/soggetto/properties/date_of_birth",
+                  "type": "Control"
+                },
+                {
+                  "scope": "#/properties/soggetto/properties/birth_place/properties/city",
+                  "type": "Control"
+                },
+                {
+                  "scope": "#/properties/soggetto/properties/birth_place/properties/province",
+                  "type": "Control"
+                }
+              ],
+              "type": "HorizontalLayout"
             }
           ],
+          "label": "a nome di",
           "type": "HorizontalLayout"
         }
       ],
-      "label": "Address",
+      "label": "a norma degli artt.33 e 35 del d.P.R. 30.05.1989, n. 223 e/o\ndegli artt. 106,107 e 108 del d.P.R. 3.11.2000 n.396\nCHIEDE",
       "type": "Group"
+    },
+    {
+      "elements": [
+        {
+          "scope": "#/properties/dichiarazione/properties/bollo",
+          "type": "Control"
+        },
+        {
+          "elements": [
+            {
+              "scope": "#/properties/dichiarazione/properties/esenzione_bollo",
+              "type": "Control",
+              "x-br": true
+            },
+            {
+              "scope": "#/properties/dichiarazione/properties/esenzione_notifica_atti_giudiziari",
+              "type": "Control",
+              "x-br": true
+            },
+            {
+              "scope": "#/properties/dichiarazione/properties/esenzione_recupero_crediti_difensore_ufficio",
+              "type": "Control",
+              "x-br": true
+            },
+            {
+              "label": "Indicare motivo di esenzione (Vedi tabella allegata)",
+              "scope": "#/properties/dichiarazione/properties/esenzione_altro",
+              "type": "Control",
+              "x-br": true
+            }
+          ],
+          "type": "VerticalLayout"
+        }
+      ],
+      "label": "consapevole che in caso di dichiarazione mendace sar\u00e0 punito ai sensi del Codice Penale\nsecondo quanto prescritto dall'art. 76 del D.P.R. 445/2000 e che inoltre,\nqualora dal controllo effettuato emerga la non veridicit\u00e0 del contenuto di taluna\ndelle dichiarazioni rese, decadr\u00e0 dai benefici conseguenti al provvedimento eventualmente\nemanato sulla base della dichiarazione non veritiera (art.75 del D.P.R. 445/2000),\n\nDICHIARA",
+      "type": "VerticalLayout"
+    },
+    {
+      "label": "Allegare copia del documento di riconoscimento\n\n*   Si rammenta che a seguito dell'entrata in vigore della legge di stabilit\u00e0 (L. 183/2011), dal 1\u00b0 gennaio 2012, \u201c le Amministrazioni pubbliche e i gestori di pubblici servizi  sono tenuti ad acquisire d\u2019ufficio le informazioni oggetto delle dichiarazioni sostitutive di cui agli artt. 46 e 47 (DPR 445/00) \u2026..ovvero ad accettare la dichiarazione sostitutiva prodotta dall\u2019interessato\u201d.\n      Sulle certificazioni  rilasciate  dal Servizio Demografico ai sensi stesso art. 15 l. 183/2011, \u00e8 riportano, a pena di nullit\u00e0, la dicitura: \"il presente certificato non pu\u00f2 essere prodotto agli organi della pubblica amministrazione o ai privati gestori di pubblici servizi.\".\n\n** Il certificato sar\u00e0 inviato a mezzo pec con firma autografa dell\u2019ufficiale d\u2019anagrafe omessa, ai sensi dell\u2019art.3 del d.lgs. n. 39/1993",
+      "type": "VerticalLayout"
     }
   ],
-  "label": "VL",
+  "label": "Richiesta certificazione anagrafica online",
   "type": "VerticalLayout"
 }

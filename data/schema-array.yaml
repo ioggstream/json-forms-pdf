@@ -2,6 +2,11 @@ type: object
 properties:
     basic:
         properties:
+            list_string:
+                type: array
+                items:
+                    type: string
+                    fromat: date-time
             Field:
                 properties:
                     a:

@@ -256,6 +256,7 @@ schemas:
       zip_code:
         title: cap
         type: string
+        maxLength: 6
       street:
         title: via
         type: string
@@ -326,14 +327,56 @@ schemas:
         $ref: 'definitions.yaml#/schemas/Location'
       tax_code:
         $ref: 'definitions.yaml#/schemas/TaxCode'
+      sex:
+        type: string
+        enum:
+          - M
+          - F
+      citizenship:
+        type: string
+      education_level:
+        $ref: 'definitions.yaml#/schemas/EducationLevel'
+      work:
+        $ref: 'definitions.yaml#/schemas/Professione'
+      email:
+        type: string
+      phone:
+        type: string
+  EducationLevel:
+    type: string
+    enum:
+      - <=Elementari
+      - Medie
+      - Diploma
+      - Laurea 3y
+      - Laurea
+      - PhD
+  Professione:
+    properties:
+      occupato:
+        type: string
+        enum:
+          - 'Libero professionista'
+          - Impiegato
+          - Lavoratore in Proprio
+          - Operaio
+          - Coadiuvante
+      non_occupato:
+        type: string
+        enum:
+          - Casalingo
+          - Studente
+          - Disoccupato
+          - Pensionato/Ritirato
+          - Altro
   Immobile:
     properties:
-      categoria: {"type": "string"}
-      foglio: {"type": "string"}
-      particella: {"type": "string"}
-      sub: {"type": "string"}
-      superficie_calpestabile: {"type": "integer", "format": "int32", "description": "Superficie calpestabile in mq"}
-      superficie_imponibile: {"type": "string", "format": "int32", "description": "Superficie calpestabile in mq"}
+      superficie_calpestabile: {"type": "integer", "description": "Superficie calpestabile in mq", "x-maxLength": 6}
+      superficie_imponibile: {"type": "integer", "description": "Superficie calpestabile in mq", "x-maxLength": 6}
+      categoria: {"type": "string", "maxLength": 3}
+      foglio: {"type": "string", "maxLength": 3}
+      particella: {"type": "string", "maxLength": 3}
+      sub: {"type": "string", "maxLength": 3}
 
   Problem:
     properties:
