@@ -243,6 +243,14 @@
         "superfici_imponibili": {
           "items": {
             "properties": {
+              "superficie_calpestabile": {
+                "type": "integer",
+                "description": "Superficie calpestabile in mq"
+              },
+              "superficie_imponibile": {
+                "type": "string",
+                "description": "Superficie calpestabile in mq"
+              },
               "categoria": {
                 "type": "string"
               },
@@ -254,19 +262,11 @@
               },
               "sub": {
                 "type": "string"
-              },
-              "superficie_calpestabile": {
-                "type": "integer",
-                "description": "Superficie calpestabile in mq"
-              },
-              "superficie_imponibile": {
-                "type": "string",
-                "description": "Superficie calpestabile in mq"
               }
             }
           },
           "maxItems": 5,
-          "minItems": 5,
+          "minItems": 0,
           "type": "array"
         }
       }

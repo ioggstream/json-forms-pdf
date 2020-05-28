@@ -1,0 +1,16 @@
+type: object
+properties:
+    basic:
+        properties:
+            Field:
+                properties:
+                    a:
+                        type: string
+                    b:
+                        type: string
+            fields:
+                type: array
+                items:
+                    $ref: "#/properties/basic/properties/Field"
+                minItems: 5
+                maxItems: 5
