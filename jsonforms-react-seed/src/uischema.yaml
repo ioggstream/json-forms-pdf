@@ -1,0 +1,29 @@
+type: VerticalLayout
+elements:
+- label: false
+  scope: '#/properties/done'
+  type: Control
+- scope: '#/properties/name'
+  type: Control
+- type: HorizontalLayout
+  elements:
+  - scope: '#/properties/due_date'
+    type: Control
+  - scope: '#/properties/rating'
+    type: Control
+- options:
+    multi: true
+  scope: '#/properties/description'
+  type: Control
+- elements:
+  type: HorizontalLayout
+  - scope: '#/properties/recurrence'
+    type: Control
+  - rule:
+      condition:
+        expectedValue: Never
+        scope: '#/properties/recurrence'
+        type: LEAF
+      effect: HIDE
+    scope: '#/properties/recurrence_interval'
+    type: Control
