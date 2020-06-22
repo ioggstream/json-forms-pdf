@@ -46,7 +46,7 @@ elements:
     CHIEDE
   elements:
     - type: HorizontalLayout
-      label: Il rilascio della sottoelencata certificazione(contrassegnata con X)  *  **
+      label: Il rilascio della sottoelencata certificazione
       elements:
       - type: Control
         scope: "#/properties/documento_richiesto"
@@ -74,7 +74,7 @@ elements:
           scope: "#/properties/soggetto/properties/birth_place/properties/city"
         - type: Control
           scope: "#/properties/soggetto/properties/birth_place/properties/province"
-- type: VerticalLayout
+- type: Group
   label: |-
     consapevole che in caso di dichiarazione mendace sarà punito ai sensi del Codice Penale
     secondo quanto prescritto dall'art. 76 del D.P.R. 445/2000 e che inoltre,
@@ -87,11 +87,15 @@ elements:
     - type: Control
       scope: "#/properties/dichiarazione/properties/bollo"
 
-    - type: VerticalLayout
+    - type: Group
+      label: che tale certificato è richiesto in esenzione dal bollo per uso
+      rule:
+        effect: DISABLE
+        condition:
+          scope: "#/properties/dichiarazione/properties/bollo"
+          schema:
+            const: true
       elements:
-      - type: Control
-        scope: "#/properties/dichiarazione/properties/esenzione_bollo"
-        x-br: true
       - type: Control
         scope: "#/properties/dichiarazione/properties/esenzione_notifica_atti_giudiziari"
         x-br: true
@@ -105,7 +109,7 @@ elements:
         scope: "#/properties/dichiarazione/properties/esenzione_altro"
         x-br: true
 
-- type: VerticalLayout
+- type: Group
   label: |-
     Allegare copia del documento di riconoscimento
 
