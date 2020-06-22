@@ -176,15 +176,7 @@ const App = ({ store, classes }: AppProps) => {
     setDisplayDataAsString(JSON.stringify(standaloneData, null, 2));
   }, [standaloneData]);
 
-  const state = { "schema": {}, "uischema": { "type": "foo" } }
-
-  loadFiles().then((ret: any) => {
-    console.log("ret: ", ret);
-    if (ret) {
-      state.schema = ret.schema;
-      state.uischema = ret.uischema;
-    }
-  });
+  const state = { "schema": {}, "uischema": { "type": "foo" } };
   const schema = state.schema;
   const uischema = state.uischema;
   console.log("uischema", uischema);
@@ -192,9 +184,8 @@ const App = ({ store, classes }: AppProps) => {
     <Fragment>
       <div className='App'>
         <header className='App-header'>
-          <img src={logo} className='App-logo' alt='logo' />
           <h1 className='App-title'>Welcome to JSON Forms with React</h1>
-          <p className='App-intro'>More Forms. Less Code.</p>
+          <p className='App-intro'>Reference an URI with schema.yaml and uischema.yaml to rock.</p>
         </header>
       </div>
       <input type="button" value="Download HTML." onClick={getMyPDF} />

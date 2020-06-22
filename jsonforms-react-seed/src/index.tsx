@@ -18,6 +18,7 @@ import { safeLoad } from 'js-yaml';
 const yaml = require("js-yaml");
 const refParser = require("json-schema-ref-parser");
 
+
 // Setup Redux store
 const data = {
   name: 'Send email to Adrian',
@@ -39,7 +40,9 @@ const rootReducer: Reducer<JsonFormsState, AnyAction> = combineReducers({
 });
 const store = createStore(rootReducer, initState, devToolsEnhancer({}));
 
-fetch('form-1/schema.yaml')
+const p = new URLSearchParams(window.location.search).get("q") || "form-1";
+
+fetch(p + '/schema.yaml')
   .then((response) => response.text())
   .then((text) => {
     const schema_ = yaml.safeLoad(text);
@@ -49,7 +52,7 @@ fetch('form-1/schema.yaml')
         throw err;
       }
       console.log(schema);
-      fetch('form-1/uischema.yaml')
+      fetch(p + '/uischema.yaml')
         .then((response) => response.text())
         .then((text) => {
           const uischema = safeLoad(text);
