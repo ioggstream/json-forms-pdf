@@ -13,8 +13,6 @@ import { Tabs, Tab } from '@material-ui/core';
 import logo from './logo.svg';
 import './App.css';
 import { safeLoad } from 'js-yaml';
-//import schema from './schema.json';
-//import uischema from './uischema.json';
 import {
   materialCells,
   materialRenderers
@@ -23,8 +21,13 @@ import { Store } from 'redux';
 import { get } from 'lodash';
 import RatingControl from './RatingControl';
 import ratingControlTester from './ratingControlTester';
+// qrcode
+const QRCode = require('qrcode')
+
+// pdf
 const jsPDF = require("jspdf");
 const html2canvas = require("html2canvas");
+// yaml
 const yaml = require("js-yaml");
 const refParser = require("json-schema-ref-parser");
 
@@ -57,11 +60,10 @@ export interface AppProps extends WithStyles<typeof styles> {
 }
 
 const data = {
-  name: 'Send email to Adrian',
-  description: 'Confirm if you have passed the subject\nHereby ...',
-  done: true,
-  recurrence: 'Daily',
-  rating: 3
+  "richiedente": {
+    "given_name": "Roberto",
+    "family_name": "Polli"
+  }
 };
 
 const getDataAsStringFromStore = (store: Store) =>
@@ -106,6 +108,13 @@ function downloadCurrentDocument() {
   a.dispatchEvent(e);
 }
 
+
+function renderQrcode(store: Store) {
+  QRCode.toCanvas(document.getElementById('qrcode'),
+    getDataAsStringFromStore(store)
+  );
+
+}
 /**
  * Convert an html element in PDF.
  * 
@@ -113,6 +122,7 @@ function downloadCurrentDocument() {
  */
 function getPDF(pdf_element: any) {
   console.log("document", pdf_element);
+
   var HTML_Width = pdf_element.offsetWidth;
   var HTML_Height = pdf_element.offsetHeight;
   var top_left_margin = 15;
@@ -130,38 +140,24 @@ function getPDF(pdf_element: any) {
     console.log(canvas.height + "  " + canvas.width);
 
 
-    var imgData = canvas.toDataURL("image/jpeg", 1.0);
+    var imgData = canvas.toDataURL("image/png", 1.0);
     var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
-    pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+    pdf.addImage(imgData, 'png', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
 
 
     for (var i = 1; i <= totalPDFPages; i++) {
       pdf.addPage(PDF_Width, PDF_Height);
-      pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+      pdf.addImage(imgData, 'png', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
     }
 
-    pdf.save("HTML-Document.pdf");
+    pdf.save("tmp-jsonforms.pdf");
   });
 };
 
 
 const App = ({ store, classes }: AppProps) => {
-  const [tabIdx, setTabIdx] = useState(0);
   const [displayDataAsString, setDisplayDataAsString] = useState('');
   const [standaloneData, setStandaloneData] = useState(data);
-  const handleTabChange = useCallback(
-    (event: any, newValue: number) => {
-      setTabIdx(newValue);
-      setDisplayDataAsString(
-        newValue === 0
-          ? getDataAsStringFromStore(store)
-          : JSON.stringify(standaloneData, null, 2)
-      );
-    },
-    [store, standaloneData]
-  );
-  const [butIdx, setButIdx] = useState(0);
-  const handleButChange = downloadCurrentDocument;
   const getMyPDF = () => { getPDF(document.body) };
   useEffect(() => {
     const updateStringData = () => {
@@ -176,19 +172,18 @@ const App = ({ store, classes }: AppProps) => {
     setDisplayDataAsString(JSON.stringify(standaloneData, null, 2));
   }, [standaloneData]);
 
-  const state = { "schema": {}, "uischema": { "type": "foo" } };
-  const schema = state.schema;
-  const uischema = state.uischema;
-  console.log("uischema", uischema);
+  useEffect(() => {
+    renderQrcode(store);
+  });
   return (
     <Fragment>
       <div className='App'>
         <header className='App-header'>
           <h1 className='App-title'>Welcome to JSON Forms with React</h1>
           <p className='App-intro'>Reference an URI with schema.yaml and uischema.yaml to rock.</p>
+          <input type="button" value="Download PDF." onClick={getMyPDF} />
         </header>
       </div>
-      <input type="button" value="Download HTML." onClick={getMyPDF} />
       <form action="" method="POST">
         <Grid
           container
@@ -200,38 +195,17 @@ const App = ({ store, classes }: AppProps) => {
             <Typography variant={'h3'} className={classes.title}>
               Rendered form
           </Typography>
-            <Tabs value={tabIdx} onChange={handleTabChange}>
-              <Tab label='via Redux' />
-              <Tab label='Standalone' />
-            </Tabs>
-            {tabIdx === 0 && (
-              <div className={classes.demoform} id='form'>
-                {store ? (
-                  <Provider store={store}>
-                    <JsonFormsReduxContext>
-                      <JsonFormsDispatch />
-                    </JsonFormsReduxContext>
-                  </Provider>
-                ) : null}
-              </div>
-            )}
-            {tabIdx === 1 && (
-              <div className={classes.demoform}>
-                <JsonForms
-                  schema={schema}
-                  uischema={uischema}
-                  data={standaloneData}
-                  renderers={[
-                    ...materialRenderers,
-                    //register custom renderer
-                    { tester: ratingControlTester, renderer: RatingControl }
-                  ]}
-                  cells={materialCells}
-                  onChange={({ errors, data }) => setStandaloneData(data)}
-                />
-              </div>
-            )}
+            <div className={classes.demoform} id='form'>
+              {store ? (
+                <Provider store={store}>
+                  <JsonFormsReduxContext>
+                    <JsonFormsDispatch />
+                  </JsonFormsReduxContext>
+                </Provider>
+              ) : null}
+            </div>
           </Grid>
+          <canvas id="qrcode"></canvas>
         </Grid>
       </form>
     </Fragment>

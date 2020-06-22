@@ -20,6 +20,7 @@
     "json-schema-ref-parser": "^9.0.1",
     "jspdf": "^1.5.3",
     "lodash": "^4.17.15",
+    "qrcode": "^1.4.4",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-redux": "^7.1.3",
