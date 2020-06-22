@@ -3,3 +3,13 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+
+/** Custom stuff */
+
+.MuiInputLabel-formControl {
+  top: 0;
+  left: 0;
+  /* position: absolute; */
+  transform: translate(0, 24px) scale(1);
+}

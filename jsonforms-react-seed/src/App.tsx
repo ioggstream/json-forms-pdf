@@ -23,8 +23,10 @@ import { Store } from 'redux';
 import { get } from 'lodash';
 import RatingControl from './RatingControl';
 import ratingControlTester from './ratingControlTester';
-
+const jsPDF = require("jspdf");
+const html2canvas = require("html2canvas");
 const yaml = require("js-yaml");
+const refParser = require("json-schema-ref-parser");
 
 
 const styles = createStyles({
@@ -44,6 +46,9 @@ const styles = createStyles({
   demoform: {
     margin: 'auto',
     padding: '1rem'
+  },
+  textField: {
+    marginLeft: '5em'
   }
 });
 
@@ -68,6 +73,78 @@ const getDataAsStringFromStore = (store: Store) =>
     )
     : '';
 
+const loadFiles = async () => {
+  fetch('form-1/schema.yaml')
+    .then((response) => response.text())
+    .then((text) => {
+      const schema_ = yaml.safeLoad(text);
+      refParser.dereference(schema_, (err: any, schema: any) => {
+        if (err) {
+          console.error(err);
+          throw err;
+        }
+
+        console.log(schema);
+        fetch('form-1/uischema.yaml')
+          .then((response) => response.text())
+          .then((text) => {
+            const uischema = safeLoad(text);
+            console.log("processed uischema", uischema);
+            return { "schema": schema, "uischema": uischema };
+          });
+      });
+    });
+};
+
+function downloadCurrentDocument() {
+  var base64doc = btoa(unescape(encodeURIComponent(document.documentElement.innerHTML))),
+    a = document.createElement('a'),
+    e = new MouseEvent('click');
+
+  a.download = 'doc.html';
+  a.href = 'data:text/html;base64,' + base64doc;
+  a.dispatchEvent(e);
+}
+
+/**
+ * Convert an html element in PDF.
+ * 
+ * @param document 
+ */
+function getPDF(pdf_element: any) {
+  console.log("document", pdf_element);
+  var HTML_Width = pdf_element.offsetWidth;
+  var HTML_Height = pdf_element.offsetHeight;
+  var top_left_margin = 15;
+  var PDF_Width = HTML_Width + (top_left_margin * 2);
+  var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+  var canvas_image_width = HTML_Width;
+  var canvas_image_height = HTML_Height;
+
+  var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+
+  html2canvas(pdf_element, { allowTaint: true }).then(function (canvas: any) {
+    canvas.getContext('2d');
+
+    console.log(canvas.height + "  " + canvas.width);
+
+
+    var imgData = canvas.toDataURL("image/jpeg", 1.0);
+    var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+    pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+
+
+    for (var i = 1; i <= totalPDFPages; i++) {
+      pdf.addPage(PDF_Width, PDF_Height);
+      pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+    }
+
+    pdf.save("HTML-Document.pdf");
+  });
+};
+
+
 const App = ({ store, classes }: AppProps) => {
   const [tabIdx, setTabIdx] = useState(0);
   const [displayDataAsString, setDisplayDataAsString] = useState('');
@@ -83,7 +160,9 @@ const App = ({ store, classes }: AppProps) => {
     },
     [store, standaloneData]
   );
-
+  const [butIdx, setButIdx] = useState(0);
+  const handleButChange = downloadCurrentDocument;
+  const getMyPDF = () => { getPDF(document.body) };
   useEffect(() => {
     const updateStringData = () => {
       const stringData = getDataAsStringFromStore(store);
@@ -97,21 +176,18 @@ const App = ({ store, classes }: AppProps) => {
     setDisplayDataAsString(JSON.stringify(standaloneData, null, 2));
   }, [standaloneData]);
 
-  fetch('form-1/schema.yaml')
-    .then((response) => response.text())
-    .then((text) => {
-      const schema_ = yaml.safeLoad(text);
-      console.log(schema_);
-      fetch('form-1/uischema.yaml')
-        .then((response) => response.text())
-        .then((text) => {
-          const uischema_ = safeLoad(text);
-          console.log(uischema_);
+  const state = { "schema": {}, "uischema": { "type": "foo" } }
 
-        });
-    });
-  const schema = {};
-  const uischema = { "type": "foo" };
+  loadFiles().then((ret: any) => {
+    console.log("ret: ", ret);
+    if (ret) {
+      state.schema = ret.schema;
+      state.uischema = ret.uischema;
+    }
+  });
+  const schema = state.schema;
+  const uischema = state.uischema;
+  console.log("uischema", uischema);
   return (
     <Fragment>
       <div className='App'>
@@ -121,13 +197,57 @@ const App = ({ store, classes }: AppProps) => {
           <p className='App-intro'>More Forms. Less Code.</p>
         </header>
       </div>
+      <input type="button" value="Download HTML." onClick={getMyPDF} />
+      <form action="" method="POST">
+        <Grid
+          container
+          justify={'center'}
+          spacing={1}
+          className={classes.container}
+        >
+          <Grid item sm={6}>
+            <Typography variant={'h3'} className={classes.title}>
+              Rendered form
+          </Typography>
+            <Tabs value={tabIdx} onChange={handleTabChange}>
+              <Tab label='via Redux' />
+              <Tab label='Standalone' />
+            </Tabs>
+            {tabIdx === 0 && (
+              <div className={classes.demoform} id='form'>
+                {store ? (
+                  <Provider store={store}>
+                    <JsonFormsReduxContext>
+                      <JsonFormsDispatch />
+                    </JsonFormsReduxContext>
+                  </Provider>
+                ) : null}
+              </div>
+            )}
+            {tabIdx === 1 && (
+              <div className={classes.demoform}>
+                <JsonForms
+                  schema={schema}
+                  uischema={uischema}
+                  data={standaloneData}
+                  renderers={[
+                    ...materialRenderers,
+                    //register custom renderer
+                    { tester: ratingControlTester, renderer: RatingControl }
+                  ]}
+                  cells={materialCells}
+                  onChange={({ errors, data }) => setStandaloneData(data)}
+                />
+              </div>
+            )}
+          </Grid>
+        </Grid>
+      </form>
+    </Fragment>
+  );
 
-      <Grid
-        container
-        justify={'center'}
-        spacing={1}
-        className={classes.container}
-      >
+}; //App
+/*
         <Grid item sm={6}>
           <Typography variant={'h3'} className={classes.title}>
             Bound data
@@ -136,45 +256,9 @@ const App = ({ store, classes }: AppProps) => {
             <pre id='boundData'>{displayDataAsString}</pre>
           </div>
         </Grid>
-        <Grid item sm={6}>
-          <Typography variant={'h3'} className={classes.title}>
-            Rendered form
-          </Typography>
-          <Tabs value={tabIdx} onChange={handleTabChange}>
-            <Tab label='via Redux' />
-            <Tab label='Standalone' />
-          </Tabs>
-          {tabIdx === 0 && (
-            <div className={classes.demoform} id='form'>
-              {store ? (
-                <Provider store={store}>
-                  <JsonFormsReduxContext>
-                    <JsonFormsDispatch />
-                  </JsonFormsReduxContext>
-                </Provider>
-              ) : null}
-            </div>
-          )}
-          {tabIdx === 1 && (
-            <div className={classes.demoform}>
-              <JsonForms
-                schema={schema}
-                uischema={uischema}
-                data={standaloneData}
-                renderers={[
-                  ...materialRenderers,
-                  //register custom renderer
-                  { tester: ratingControlTester, renderer: RatingControl }
-                ]}
-                cells={materialCells}
-                onChange={({ errors, data }) => setStandaloneData(data)}
-              />
-            </div>
-          )}
-        </Grid>
-      </Grid>
-    </Fragment>
-  );
-};
+
+*/
+
+
 
 export default withStyles(styles)(App);
