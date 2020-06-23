@@ -1,6 +1,17 @@
 label: Richiesta certificazione anagrafica online
 type: VerticalLayout
 elements:
+- type: Markdown
+  label: Test label
+  scope: ""
+  text: |-
+    # Ecco qui
+    una lunga descriozioe
+
+    ## di tutta 
+
+    quella roba
+
 - type: Group
   label: Il sottoscritto
   elements:
@@ -86,15 +97,16 @@ elements:
   elements:
     - type: Control
       scope: "#/properties/dichiarazione/properties/bollo"
-
+      label: |-
+        Che tale certificato è richiesto in
     - type: Group
-      label: che tale certificato è richiesto in esenzione dal bollo per uso
+      label: Esenzione dal bollo per uso
       rule:
         effect: DISABLE
         condition:
           scope: "#/properties/dichiarazione/properties/bollo"
           schema:
-            const: true
+            const: "bollo"
       elements:
       - type: Control
         scope: "#/properties/dichiarazione/properties/esenzione_notifica_atti_giudiziari"

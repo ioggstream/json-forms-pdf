@@ -4,8 +4,6 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { combineReducers, createStore, Reducer, AnyAction } from 'redux';
-// import schema from './schema.json';
-// import uischema from './uischema.json';
 import { Actions, jsonformsReducer, JsonFormsState } from '@jsonforms/core';
 import {
   materialCells,
@@ -13,6 +11,9 @@ import {
 } from '@jsonforms/material-renderers';
 import RatingControl from './RatingControl';
 import ratingControlTester from './ratingControlTester';
+import MarkdownControl from './MarkdownControl';
+import markdownControlTester from './markdownControlTester';
+
 import { devToolsEnhancer } from 'redux-devtools-extension';
 import { safeLoad } from 'js-yaml';
 const yaml = require("js-yaml");
@@ -40,22 +41,26 @@ const rootReducer: Reducer<JsonFormsState, AnyAction> = combineReducers({
 const store = createStore(rootReducer, initState, devToolsEnhancer({}));
 
 const p = new URLSearchParams(window.location.search).get("q") || "form-1";
+const schema_url = p + '/schema.yaml'
+const uischema_url = p + '/uischema.yaml'
 
-fetch(p + '/schema.yaml')
-  .then((response) => response.text())
-  .then((text) => {
-    const schema_ = yaml.safeLoad(text);
-    refParser.dereference(schema_, (err: any, schema: any) => {
+const fetchYaml = async (url: string) => {
+  const text = await (await fetch(url)).text();
+  const y = yaml.safeLoad(text);
+  console.debug(url, y);
+  return y;
+}
+
+fetchYaml(schema_url)
+  .then((schema_yaml) => {
+    refParser.dereference(schema_yaml, (err: any, schema: any) => {
       if (err) {
         console.error(err);
         throw err;
       }
       console.log(schema);
-      fetch(p + '/uischema.yaml')
-        .then((response) => response.text())
-        .then((text) => {
-          const uischema = safeLoad(text);
-          console.log(uischema);
+      fetchYaml(uischema_url)
+        .then((uischema) => {
           store.dispatch(Actions.init(data, schema, uischema));
         });
     });
@@ -64,6 +69,7 @@ fetch(p + '/schema.yaml')
 
 // Register custom renderer for the Redux tab
 store.dispatch(Actions.registerRenderer(ratingControlTester, RatingControl));
+store.dispatch(Actions.registerRenderer(markdownControlTester, MarkdownControl));
 
 ReactDOM.render(<App store={store} />, document.getElementById('root'));
 registerServiceWorker();

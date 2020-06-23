@@ -32,6 +32,7 @@ const yaml = require("js-yaml");
 const refParser = require("json-schema-ref-parser");
 
 
+
 const styles = createStyles({
   container: {
     padding: '1em'
@@ -74,39 +75,6 @@ const getDataAsStringFromStore = (store: Store) =>
       2
     )
     : '';
-
-const loadFiles = async () => {
-  fetch('form-1/schema.yaml')
-    .then((response) => response.text())
-    .then((text) => {
-      const schema_ = yaml.safeLoad(text);
-      refParser.dereference(schema_, (err: any, schema: any) => {
-        if (err) {
-          console.error(err);
-          throw err;
-        }
-
-        console.log(schema);
-        fetch('form-1/uischema.yaml')
-          .then((response) => response.text())
-          .then((text) => {
-            const uischema = safeLoad(text);
-            console.log("processed uischema", uischema);
-            return { "schema": schema, "uischema": uischema };
-          });
-      });
-    });
-};
-
-function downloadCurrentDocument() {
-  var base64doc = btoa(unescape(encodeURIComponent(document.documentElement.innerHTML))),
-    a = document.createElement('a'),
-    e = new MouseEvent('click');
-
-  a.download = 'doc.html';
-  a.href = 'data:text/html;base64,' + base64doc;
-  a.dispatchEvent(e);
-}
 
 
 function renderQrcode(store: Store) {
@@ -156,6 +124,7 @@ function getPDF(pdf_element: any) {
 
 
 const App = ({ store, classes }: AppProps) => {
+  const processed = 0;
   const [displayDataAsString, setDisplayDataAsString] = useState('');
   const [standaloneData, setStandaloneData] = useState(data);
   const getMyPDF = () => { getPDF(document.body) };
@@ -175,6 +144,7 @@ const App = ({ store, classes }: AppProps) => {
   useEffect(() => {
     renderQrcode(store);
   });
+
   return (
     <Fragment>
       <div className='App'>

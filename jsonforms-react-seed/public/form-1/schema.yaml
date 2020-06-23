@@ -16,13 +16,10 @@ properties:
     dichiarazione:
         properties:
             bollo:
-                type: boolean
-                title: |-
-                    Che tale certificato è richiesto in bollo
-            esenzione_bollo:
-                type: boolean
-                title: |-
-                    Che tale certificato è richiesto in esenzione dal bollo per uso
+                type: string
+                enum:
+                    - bollo
+                    - esenzione da bollo
             esenzione_notifica_atti_giudiziari:
                 type: boolean
                 title: |-
